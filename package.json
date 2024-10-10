@@ -2,9 +2,11 @@
   "name": "backend-team-soroush",
   "version": "1.0.0",
   "description": "Back-end : Bataille Navale",
-  "main": "src/App/app.js",
+  "main": "./src/App/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/App/app.js",
+    "start:watch": "node --watch-path=./src ./src/App/app.js"
   },
   "type": "module",
   "author": "",
