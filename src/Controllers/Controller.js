@@ -14,10 +14,10 @@ router.get('/newNavire', (req, res) => {
 
 /*
 * Ne fonctionne pas pour le moment pb au passage des arguments
+*/
 router.get('/startGame', (req, res) => {
     res.json(service.createPlateau(req.query.nlong, req.query.nlarg));
 })
-*/
 
 router.all('*', (req, res) => {
     res.sendStatus(404).end()
