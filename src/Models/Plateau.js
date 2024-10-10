@@ -8,10 +8,10 @@ export default class Plateau {
     }
 
     initialiserGrille(nlong, nlarg){
-        const grille = []
-        for(i in nlong){
-            const ligne = []
-            for(j in nlarg){
+        const grille = new Array();
+        for(let i=0; i < nlong; i++){
+            const ligne = new Array();
+            for(let j=0; j < nlarg; j++){
                 ligne.push(new Case(i, j));
             }
 
@@ -19,5 +19,9 @@ export default class Plateau {
         }
 
         return grille;
+    }
+
+    getCase(x, y){
+        return this.grille[x][y];
     }
 }
