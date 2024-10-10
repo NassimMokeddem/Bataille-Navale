@@ -1,5 +1,3 @@
-//import { Plateau } from "./Plateau.js";
-
 /*
 * La classe Navire permet de décrire un navire pour le jeu.
 * sante : points de vie
@@ -8,7 +6,7 @@
 * pa : capacité points d'action
 */
 
-export class Navire {
+export default class Navire {
     constructor(type) {
         this.type = type;
         this.sante = this.definirSanteNavire(type);
@@ -92,21 +90,4 @@ export class Navire {
     estDetruit(){
         return this.sante <= 0;
     }
-
-
-    //TO DO
-    /*
-    calculateMove(monde){
-        var retArray = new Array();
-        var cpt = 0;
-
-        for(var i = 1; i <= this.pmr; i++){
-            if(monde.isInWorld(this.posx - 1, this.posy)){
-                retArray[cpt] = [this.posx - i, this.posy]
-            }
-        }
-
-        Math.pow(4, this.pmr) - 4 * (this.pmr -1)
-    }
-        */
 }
