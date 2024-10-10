@@ -1,4 +1,4 @@
-export class Case{
+export default class Case{
     constructor(x, y) {
         this.x = x;
         this.y = y;
