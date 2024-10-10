@@ -1,6 +1,6 @@
-import { Case } from "./Case.js";
+import Case from "./Case.js";
 
-export class Plateau {
+export default class Plateau {
     constructor(nlong, nlarg){
         this.nlong = nlong;
         this.nlarg = nlarg;
@@ -20,13 +20,4 @@ export class Plateau {
 
         return grille;
     }
-/*
-    setSpace(posx, posy, object){
-        this.terrain[posx][posy] = object
-    }
-
-    isInWorld(posx, posy){
-        return (posx >= 0) && (posx < this.nlong) && (posy >= 0) && (posy < this.nlarg)  
-    }
-*/
 }
