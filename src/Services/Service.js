@@ -1,4 +1,4 @@
-import { Destroyer,SousMarin, Fregate} from "../Models/Navire.js"
+import { Destroyer, SousMarin, Fregate} from "../Models/Navire.js"
 import Plateau from "../Models/Plateau.js";
 
 export default class Service{

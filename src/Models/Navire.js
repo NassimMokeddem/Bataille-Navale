@@ -26,14 +26,14 @@ export class Destroyer extends Navire{
     }
 }
 
-export class SousMarin{
+export class SousMarin extends Navire{
     constructor(){
-        super('Sousmarin', 14, 12, 3, 4, 4);
+        super('SousMarin', 14, 12, 3, 4, 4);
     }
 }
 
 export class Fregate extends Navire{
     constructor(){
-        super('Fregate',20, 4, 8, 3, 6);
+        super('Fregate', 20, 4, 8, 3, 6);
     }
 }
