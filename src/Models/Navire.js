@@ -6,7 +6,7 @@
 * pa : capacité points d'action
 */
 
-export default class Navire {
+export class Navire {
     constructor(type, sante, degat, armure, pm, pa){
         this.type = type;
         this.sante = sante;
@@ -15,6 +15,19 @@ export default class Navire {
         this.pm = pm;
         this.pa = pa;
     }
+
+    isEqual(obj){
+        if (! obj instanceof Navire) return false;
+        if (obj.type != this.type || 
+            obj.sante != this.sante || 
+            obj.degat != this.degat || 
+            obj.armure != this.armure || 
+            obj.pm != this.pm || 
+            obj.pa != this.pa) return false;
+
+        return true;
+    }
+
     estDetruit(){
         return this.sante <= 0;
     }
