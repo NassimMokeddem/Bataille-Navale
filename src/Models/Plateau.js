@@ -1,12 +1,11 @@
 import Case from "./Case.js";
 
 export default class Plateau {
-    constructor(nlong, nlarg){
+    constructor(nlong, nlarg) {
         this.nlong = nlong;
         this.nlarg = nlarg;
         this.grille = this.initialiserGrille(nlarg, nlong);
     }
-
     initialiserGrille(nlong, nlarg){
         const grille = new Array();
         for(let i=0; i < nlong; i++){
@@ -21,7 +20,19 @@ export default class Plateau {
         return grille;
     }
 
-    getCase(x, y){
-        return this.grille[x][y];
+    getCase(x, y) {
+        if (x >= 0 && x < this.nlong && y >= 0 && y < this.nlarg) {
+            return this.grille[x][y];
+        } else {
+            throw new Error("Invalid coordinates");
+        }
+    }
+
+    setCaseContent(x, y, contenu) {
+        if (x >= 0 && x < this.nlong && y >= 0 && y < this.nlarg) {
+            this.grille[x][y].contenu = contenu;
+        } else {
+            throw new Error("Invalid coordinates");
+        }
     }
 }

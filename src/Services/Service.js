@@ -15,7 +15,22 @@ export default class Service{
         }
     }
 
-    createPlateau(nlong, nlarg){
-        return new Plateau(nlong, nlarg);
+    createPlateau(nlong, nlarg) {
+        this.plateau = new Plateau(nlong, nlarg); 
+        return this.plateau;
+    }
+
+    getPlateau() {
+        if (!this.plateau) {
+            throw new Error("No plateau found. Create a plateau first.");
+        }
+        return this.plateau;
+    }
+
+    updatePlateau(x, y, contenu) {
+        if (!this.plateau) {
+            throw new Error("No plateau found. Create a plateau first.");
+        }
+        this.plateau.setCaseContent(x, y, contenu);
     }
 }
