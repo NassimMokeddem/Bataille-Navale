@@ -35,4 +35,14 @@ export default class Plateau {
             throw new Error("Invalid coordinates");
         }
     }
+
+    /*
+    setCaseContentPlacerNavire(x, y, contenu) {
+        if (x >= 0 && x < this.nlong && y >= 0 && y < this.nlarg) {
+            this.grille[x][y].placerNavire(contenu);
+        } else {
+            throw new Error("Invalid coordinates");
+        }
+    }
+    */
 }
