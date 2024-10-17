@@ -15,57 +15,44 @@ router.get('/newNavire', (req, res) => {
     res.json(service.createNavire(req.query.type));
 })
 
-router.get('/startGame', (req, res) => {
+router.post('/startGame', (req, res) => {
     res.json(service.createPlateau(req.query.nlong, req.query.nlarg));
 })
 
-router.post('/startGame', (req, res) => {
-    if (req.body.contenu !== undefined) { // Ajouter un bateau
-        const { x, y, contenu } = req.body;
-        
-        switch(contenu){
-            case "Destroyer":
-                service.updatePlateau(x, y, new Destroyer());
-                break;
-            case "SousMarin":
-                service.updatePlateau(x, y, new SousMarin());
-                break;
-            case "Fregate":
-                service.updatePlateau(x, y, new Fregate());
-                break;
-            default:
-        }
-        const plateau = service.getPlateau();
-        res.json({ message: 'Map updated successfully', plateau });
-    } 
-    else if (req.body.x1 !== undefined && req.body.x2 !== undefined) { // Tirer
-        const { x1, y1, x2, y2 } = req.body;
-        const plateau = service.getPlateau();
-        service.applyShot(x1, y1, x2, y2, res, plateau);
+router.put('/putNewBoat', (req, res) => {
+    const {x, y, contenu} = req.query;
+
+    if (x === undefined || y === undefined || contenu === undefined)
+        res.status(400).send({ error: 'Format des données non reconnu.' }).end();
+
+    switch(contenu){
+        case "Destroyer":
+            service.updatePlateau(x, y, new Destroyer());
+            break;
+        case "SousMarin":
+            service.updatePlateau(x, y, new SousMarin());
+            break;
+        case "Fregate":
+            service.updatePlateau(x, y, new Fregate());
+            break;
+        default:
+            res.status(400).send({ error: 'Mauvais type de navire.' }).end();
     }
-    else {
-        res.status(400).send({ error: 'Format des données non reconnu.' });
-    }
-    /*
-    try {
-        switch(contenu){
-            case "Destroyer":
-                service.updatePlateau(x, y, new Destroyer());
-                break;
-            case "SousMarin":
-                service.updatePlateau(x, y, new SousMarin());
-                break;
-            case "Fregate":
-                service.updatePlateau(x, y, new Fregate());
-                break;
-            default:
-        }
-        const plateau = service.getPlateau();
-        res.json({ message: 'Map updated successfully', plateau });
-    
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }*/
+    const plateau = service.getPlateau();
+
+    res.json({ message: 'Map updated successfully', plateau });
+})
+
+router.put('/tirer', (req,res) => {
+    const { x1, y1, x2, y2 } = req.query;
+
+    if (x1 === undefined || y1 === undefined ||
+        x2 === undefined || y2 === undefined
+    )
+    res.status(400).send({ error: 'Format des données non reconnu.' }).end();
+
+    const plateau = service.getPlateau();
+    service.applyShot(x1, y1, x2, y2, res, plateau);
 })
 
 router.all('*', (req, res) => {
