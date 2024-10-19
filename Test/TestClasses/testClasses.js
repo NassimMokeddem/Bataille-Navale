@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "assert";
 import { Destroyer, Fregate, Navire, SousMarin } from "../../src/Models/Navire.js";
 
-test('Navire: isEqual', {skip: false}, async(t) => {
+test('Navire: isEqual', {skip : false}, async(t) => {
     /*
     *  Initialisation des ressources
     */
@@ -72,3 +72,16 @@ test('Constructors of Navire', {skip : false}, async (t) => {
         assert.strictEqual( navireSsMarin.isEqual(destroyer), false);
     });
 });
+
+test('Navire: estDetruit', {skip : false}, async (t) => {
+    let testNavireDestroyed = new Navire('Destroyer', 0, 2, 5, 5, 2);
+    let testNavireNDestroyed = new Navire('Destroyer', 15, 2, 5, 5, 2);
+
+    await t.test('Is destroyed', (t) => {
+        assert.strictEqual( testNavireDestroyed.estDetruit(), true );
+    })
+
+    await t.test('Isn\'t destroyed', (t) => {
+        assert.strictEqual( testNavireNDestroyed.estDetruit(), false );
+    })
+})
