@@ -30,4 +30,21 @@ test('Service: updatePlateau', {skip : false}, async (t) => {
             assert.fail('Bad type error thrown by Service.js: updatePlateau');
         }
     })
+
+    /*
+    *  Testing with bad coordinates but good object
+    */
+    await t.test('Error on coordinates', (t) => {
+        try{
+            testService.updatePlateau(-1, -1, testBoat);
+            assert.fail('Shouldn\'t work with wrong coordinates');
+        }
+        catch(err ) {
+            if (err instanceof Error) {
+                if (err.message === "Invalid coordinates") assert.fail('The method of Service.js: updatePlateau should catch the error thrown by Plateau.js : setCaseContent')
+                assert.ok();
+            } 
+            assert.fail('Bad type error thrown by Service.js: updatePlateau');
+        }
+    })
 })
