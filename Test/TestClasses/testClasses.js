@@ -2,6 +2,19 @@ import test from "node:test";
 import assert from "assert";
 import { Destroyer, Fregate, Navire, SousMarin } from "../../src/Models/Navire.js";
 
+test('Navire: isEqual', {skip: false}, async(t) => {
+    let navireDestr = new Navire('Destroyer', 15, 2, 5, 5, 2);
+    let navireFreg = new Navire('Fregate', 20, 4, 8, 3, 6);
+
+
+    await t.test('Will be equal', (t) => {
+        assert.strictEqual( navireDestr.isEqual(navireDestr), true);
+    })
+
+    await t.test('Won\'t be equal', (t) => {
+        assert.strictEqual( navireDestr.isEqual(navireFreg), false);
+    })
+})
 
 test('Constructors of Navire', {skip : false}, async (t) => {
     let navireDestr = new Navire('Destroyer', 15, 2, 5, 5, 2);
