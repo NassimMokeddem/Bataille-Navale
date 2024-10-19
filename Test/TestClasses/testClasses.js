@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "assert";
 import { Destroyer, Fregate, Navire, SousMarin } from "../../src/Models/Navire.js";
+import Case from "../../src/Models/Case.js"
 
 test('Navire: isEqual', {skip : false}, async(t) => {
     /*
@@ -93,4 +94,28 @@ test('Navire: estDetruit', {skip : false}, async (t) => {
     await t.test('Isn\'t destroyed', (t) => {
         assert.strictEqual( testNavireNDestroyed.estDetruit(), false );
     })
+})
+
+test('Case: estVide', {skip : false}, async(t) => {
+    /*
+    *  Initialisation des ressources
+    */
+     let testCaseVide = new Case(0, 0);
+     let testCaseNVide = new Case(0, 0);
+
+     testCaseNVide.contenu = new Destroyer();
+ 
+     /*
+     *  Is empty
+     */
+     await t.test('Is empty', (t) => {
+         assert.strictEqual( testCaseVide.estVide(), true );
+     })
+ 
+     /*
+     *  Isn't empty
+     */
+     await t.test('Isn\'t empty', (t) => {
+         assert.strictEqual( testCaseNVide.estVide(), false );
+     })
 })
