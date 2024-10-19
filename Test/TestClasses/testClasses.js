@@ -74,13 +74,22 @@ test('Constructors of Navire', {skip : false}, async (t) => {
 });
 
 test('Navire: estDetruit', {skip : false}, async (t) => {
+    /*
+    *  Initialisation des ressources
+    */
     let testNavireDestroyed = new Navire('Destroyer', 0, 2, 5, 5, 2);
     let testNavireNDestroyed = new Navire('Destroyer', 15, 2, 5, 5, 2);
 
+    /*
+    *  Is destroyed
+    */
     await t.test('Is destroyed', (t) => {
         assert.strictEqual( testNavireDestroyed.estDetruit(), true );
     })
 
+    /*
+    *  Isn't destroyed
+    */
     await t.test('Isn\'t destroyed', (t) => {
         assert.strictEqual( testNavireNDestroyed.estDetruit(), false );
     })
