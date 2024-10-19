@@ -119,3 +119,42 @@ test('Case: estVide', {skip : false}, async(t) => {
          assert.strictEqual( testCaseNVide.estVide(), false );
      })
 })
+
+test('Case: placerNavire', {skip : false}, async(t) => {
+    /*
+    *  Initialisation des ressources
+    */
+     let testCase = new Case(0, 0);
+
+     let testDestroyer = new Destroyer();
+ 
+     /*
+     *  Place a boat
+     */
+     await t.test('Place a boat', (t) => {
+     // Vérification si le bateau a bien été insérez dans la case
+        try {
+            testCase.placerNavire(testDestroyer);
+            assert.strictEqual( testCase.contenu.isEqual(testDestroyer), true );
+        }
+        catch(err ) {
+            assert.fail(err.message);
+        }
+     })
+ 
+     /*
+     *  Place anything else
+     */
+     await t.test('Place anything else', (t) => {
+        try {
+            testCase.placerNavire("toto");
+            assert.fail('Shouldn\'t work with wrong type object');
+        }
+        catch(err ) {
+            if (err instanceof Error) {
+                assert.ok(err.message);
+            } 
+            assert.fail(err.message);
+        }
+     })
+})
