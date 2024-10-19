@@ -158,3 +158,19 @@ test('Case: placerNavire', {skip : false}, async(t) => {
         }
      })
 })
+
+test('Case: vider', {skip : false}, async(t) => {
+    /*
+    *  Initialisation des ressources
+    */
+    let testCaseNVide = new Case(0, 0);
+
+    testCaseNVide.contenu = new Destroyer();
+//  Vérification si case bien remplie
+    assert.strictEqual( testCaseNVide.estVide(), false );
+
+    testCaseNVide.vider();
+
+//  Vérification si la case est bien vidée
+    assert.strictEqual( testCaseNVide.estVide(), true);
+})
