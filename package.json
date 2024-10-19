@@ -4,9 +4,10 @@
   "description": "Back-end : Bataille Navale",
   "main": "./src/App/app.js",
   "scripts": {
-    "test": "npm run test:class && npm run test:api",
+    "test": "make test",
     "test:class": "node ./Test/TestClasses/testClasses.js",
     "test:api": "node ./Test/TestAPI/testAPI.js",
+    "test:service": "node ./Test/TestService/testService.js",
     "start": "node ./src/App/app.js",
     "start:watch": "node --watch-path=./src ./src/App/app.js"
   },
