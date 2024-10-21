@@ -159,7 +159,7 @@ test('Case: placerNavire', {skip : false}, async(t) => {
      })
 })
 
-test('Case: vider', {skip : false}, async(t) => {
+test('Case: vider', {skip : false}, (t) => {
     /*
     *  Initialisation des ressources
     */
