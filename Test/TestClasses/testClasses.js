@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "assert";
 import { Destroyer, Fregate, Navire, SousMarin } from "../../src/Models/Navire.js";
 import Case from "../../src/Models/Case.js"
+import Plateau from "../../src/Models/Plateau.js";
 
 test('Navire: isEqual', {skip : false}, async(t) => {
     /*
@@ -173,4 +174,85 @@ test('Case: vider', {skip : false}, (t) => {
 
 //  Vérification si la case est bien vidée
     assert.strictEqual( testCaseNVide.estVide(), true);
+})
+
+/*
+*   !!! COMMENTAIRES A RETIRER AVANT LA FIN DU PROJET !!!
+*
+*   Je mets toujours le constructeur de Plateau dans un try
+*   car initialiserGrille doit pouvoir renvoyer une erreur
+*   et donc le constructeur de Plateau aussi
+*  
+*/
+
+test('Constructor of Plateau', {skip : false}, async(t) => {
+
+
+     /*
+     *  Normal board
+     *  On va passer des arguments tout à fait normaux et
+     *  vérifier si la grille a bien été construite
+     */
+     await t.test('Normal board', async(t) => {
+        try {
+            const testPlateau = new Plateau(10, 15);
+
+            /*
+            *  Attributes verification
+            */
+            await t.test('Attribute verification', (t) => {
+                assert.strictEqual( testPlateau.nlong, 10 );
+                assert.strictEqual( testPlateau.nlarg, 15 );
+            })
+    
+            /*
+            *  Grid verification
+            */
+           await t.test('Grid verification', async (t) => {
+    
+               /*
+               *  Grid type
+               */
+               await t.test('Grid type', (t) => {
+                   if(! Array.isArray(testPlateau.grille) ) assert.fail('grille should be an object of type Array');
+               })
+    
+               /*
+               *  Column number verification
+               */
+               await t.test('Column number verification', (t) => {
+                   assert.strictEqual( testPlateau.grille.length, testPlateau.nlong );
+               })
+        
+               /*
+               *   Grid content
+               */
+               await t.test('Grid content', (t) => {
+                   for (const colonne of testPlateau.grille) {
+                       if(! Array.isArray(colonne) ) assert.fail('Each element of the first dimension of grille should be an Array');
+           
+                   //  Vérification du nombre de ligne
+                       assert.strictEqual( colonne.length, testPlateau.nlarg );
+           
+                       for(const cell of colonne){
+                           if(! cell instanceof Case) assert.fail('grille should contain in two dimension Case object type');
+                           assert.strictEqual( cell.estVide(), true );
+                       }
+                   }
+               })
+            })
+        }
+
+        catch(err ) {
+            /*
+            *   !!! TO DO !!!
+            *   Vérifiez que le message d'erreur renvoyer par le constructeur
+            *   n'est pas le même que pour initialiserGrille pour bien voir que
+            *   le constructeur catch l'erreur
+            */
+
+            assert.fail(err.message);
+        }
+
+     })
 })
