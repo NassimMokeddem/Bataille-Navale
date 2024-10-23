@@ -43,6 +43,14 @@ router.put('/putNewBoat', (req, res) => {
     res.json({ message: 'Map updated successfully', plateau });
 })
 
+
+/*
+*  TO DO
+*  modifier les données à recevoir:
+*  requête body -> Navire attaquant, Navire defenseur, Case attaquant, Case Defenseur
+*  
+*  modifier l'appel de service pour utiliser service.tirer
+*/
 router.put('/tirer', (req,res) => {
     const { x1, y1, x2, y2 } = req.query;
 
