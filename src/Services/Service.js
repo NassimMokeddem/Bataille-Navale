@@ -1,5 +1,6 @@
-import { Destroyer, SousMarin, Fregate} from "../Models/Navire.js"
+import { Navire, Destroyer, SousMarin, Fregate} from "../Models/Navire.js"
 import Plateau from "../Models/Plateau.js";
+import Case from "../Models/Case.js";
 
 export default class Service{
     createNavire(type){
@@ -32,6 +33,107 @@ export default class Service{
             throw new Error("No plateau found. Create a plateau first.");
         }
         this.plateau.setCaseContent(x, y, contenu);
+    }
+
+    calculDegat(attaquant, defenseur){
+        /*
+        *  TO DO
+        *  Reste à ajouter si c'est une base
+        */
+        if(! (attaquant instanceof Navire))
+            throw TypeError("Wrong argument type attaquant in Navire: calculDegat")
+
+        if(! (defenseur instanceof Navire))
+            throw TypeError("Wrong argument type defenseur in Navire: calculDegat")
+
+        const degatAppliquee = attaquant.getDegat() - defenseur.getArmure();
+        if(degatAppliquee <= 0)
+            return 0
+        return degatAppliquee
+    }
+
+    diffCoord( pointA, pointB ){
+        if(! (pointA instanceof Case) )
+            throw TypeError("Wrong argument type pointA Service: diffCoord")
+
+        if(! (pointB instanceof Case) )
+            throw TypeError("Wrong argument type pointB Service: diffCoord")
+
+        return Math.abs( pointA.getX() - pointB.getX() ) + Math.abs( pointA.getY() - pointB.getY() )
+    }
+
+    verifPortee(pointA, pointB, portee){
+        if(! (pointA instanceof Case))
+            throw TypeError("Wrong argument type pointA in Service: verifPortee")
+
+        if(! (pointB instanceof Case))
+            throw TypeError("Wrong argument type pointB in Service: verifPortee")
+
+        if(this.diffCoord(pointA, pointB) <= portee)
+            return true
+        else return false
+    }
+
+    tirer(attaquant, defenseur){
+        /*
+        *  TO DO
+        *  Reste à ajouter si c'est une base
+        */
+        if(! (attaquant instanceof Navire)){
+            throw TypeError("Wrong argument type attaquant in Service: tirer")
+        }
+
+        if(! (defenseur instanceof Navire)){
+            throw TypeError("Wrong argument type defenseur in Service: tirer")
+        }
+
+        var degatAppliquee = 0;
+
+        try{
+            degatAppliquee = this.calculDegat(attaquant, defenseur);
+        }
+        catch(err ){
+            if(err instanceof TypeError)
+                throw TypeError("Wrong argument type in Service: tirer\nWent through the first control of Service: tirer")
+        }
+
+        if(defenseur.getSante() > degatAppliquee)
+            defenseur.setSante(defenseur.getSante() - degatAppliquee)
+        else defenseur.setSante(0)
+    }
+
+    tirerNavire(attaquant, defenseur, cAttaquant, cDefenseur){
+        if(! (attaquant instanceof Navire))
+            throw TypeError("Wrong argument type attaquant in Plateau: tirerNavire")
+
+        /*
+        *  TO DO
+        *  Reste à ajouter si c'est une base
+        */
+        if(! (defenseur instanceof Navire))
+            throw TypeError("Wrong argument type defenseur in Plateau: tirerNavire")
+
+        if(! (cAttaquant instanceof Case) )
+            throw TypeError("Wrong argument type cAttaquant in Plateau: tirerNavire")
+
+        if(! (cDefenseur instanceof Case) )
+            throw TypeError("Wrong argument type cDefenseur in Plateau: tirerNavire")
+
+        if(! this.verifPortee(cAttaquant, cDefenseur, attaquant.getPortee()))
+            throw Error("The attacker doesn\'t have enough range")
+
+        try{
+            this.tirer(attaquant, defenseur);
+        }
+        catch(err ){
+            if(err instanceof TypeError)
+                throw TypeError("Wrong argument type in Service: tirerNavire\nWent through the first control of Service: tirerNavire")
+        }
+
+        if(defenseur.estDetruit())
+            cDefenseur.vider();
+
+        return defenseur
     }
 
     applyShot(x1, y1, x2, y2, res, plateau){ // x1 et y1 bateau source du tir

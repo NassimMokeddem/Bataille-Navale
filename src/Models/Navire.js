@@ -44,46 +44,7 @@ export class Navire {
         return this.sante <= 0;
     }
 
-    static calculDegat(attaquant, defenseur){
-        /*
-        *  TO DO
-        *  Reste à ajouter si c'est une base
-        */
-        if(! (attaquant instanceof Navire))
-            throw TypeError("Wrong argument type attaquant in Navire: calculDegat")
-
-        if(! (defenseur instanceof Navire))
-            throw TypeError("Wrong argument type defenseur in Navire: calculDegat")
-
-        const degatAppliquee = attaquant.getDegat() - defenseur.getArmure();
-        if(degatAppliquee <= 0)
-            return 0
-        return degatAppliquee
-    }
-
-    tirer(cible){
-        /*
-        *  TO DO
-        *  Reste à ajouter si c'est une base
-        */
-        if(! (cible instanceof Navire)){
-            throw TypeError("Wrong argument type in Navire: tirer")
-        }
-
-        var degatAppliquee = 0;
-
-        try{
-            degatAppliquee = Navire.calculDegat(this, cible);
-        }
-        catch(err ){
-            if(err instanceof TypeError)
-                throw TypeError("Wrong argument type in Navire: tirer\nWent through the first control of Navire: tirer")
-        }
-
-        if(cible.getSante() > degatAppliquee)
-            cible.setSante(cible.getSante() - degatAppliquee)
-        else cible.setSante(0)
-    }
+    
 }
 
 export class Destroyer extends Navire{
