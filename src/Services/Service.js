@@ -136,6 +136,10 @@ export default class Service{
         return defenseur
     }
 
+
+    /*
+    * Deprecated
+    */
     applyShot(x1, y1, x2, y2, res, plateau){ // x1 et y1 bateau source du tir
         if(x1 === x2 && y1 === y2){ // ajouter case ou il y'avait un bateau mais détruit
             res.json({ message: `On ne peux pas se tirer dessus !!! x:${x2} y:${y2}`, plateau});
