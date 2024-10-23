@@ -56,6 +56,30 @@ export class Navire {
             return 0
         return degatAppliquee
     }
+
+    tirer(cible){
+        /*
+        *  TO DO
+        *  Reste à ajouter si c'est une base
+        */
+        if(! (cible instanceof Navire)){
+            throw TypeError("Wrong argument type in Navire: tirer")
+        }
+
+        var degatAppliquee = 0;
+
+        try{
+            degatAppliquee = Navire.calculDegat(this, cible);
+        }
+        catch(err ){
+            if(err instanceof TypeError)
+                throw TypeError("Wrong argument type in Navire: tirer\nWent through the first control of Navire: tirer")
+        }
+
+        if(cible.getSante() > degatAppliquee)
+            cible.setSante(cible.getSante() - degatAppliquee)
+        else cible.setSante(0)
+    }
 }
 
 export class Destroyer extends Navire{
