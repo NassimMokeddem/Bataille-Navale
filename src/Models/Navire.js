@@ -56,3 +56,5 @@ export class Fregate extends Navire{
 getPortee(){ return this.portee }
 
 getDegat(){ return this.degat }
+
+getArmure(){ return this.armure }
