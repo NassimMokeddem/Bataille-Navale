@@ -43,6 +43,19 @@ export class Navire {
     estDetruit(){
         return this.sante <= 0;
     }
+
+    static calculDegat(attaquant, defenseur){
+        if(! (attaquant instanceof Navire))
+            throw TypeError("Wrong argument type attaquant in Navire: calculDegat")
+
+        if(! (defenseur instanceof Navire))
+            throw TypeError("Wrong argument type defenseur in Navire: calculDegat")
+
+        const degatAppliquee = attaquant.getDegat() - defenseur.getArmure();
+        if(degatAppliquee <= 0)
+            return 0
+        return degatAppliquee
+    }
 }
 
 export class Destroyer extends Navire{
