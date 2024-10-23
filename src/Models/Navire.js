@@ -7,13 +7,14 @@
 */
 
 export class Navire {
-    constructor(type, sante, degat, armure, pm, pa){
+    constructor(type, sante, degat, armure, pm, pa, portee){
         this.type = type;
         this.sante = sante;
         this.degat = degat;
         this.armure = armure;
         this.pm = pm;
         this.pa = pa;
+        this.portee = portee;
     }
 
     isEqual(obj){
@@ -23,7 +24,8 @@ export class Navire {
             obj.degat != this.degat || 
             obj.armure != this.armure || 
             obj.pm != this.pm || 
-            obj.pa != this.pa) return false;
+            obj.pa != this.pa ||
+            obj.portee != this.portee ) return false;
 
         return true;
     }
@@ -35,18 +37,20 @@ export class Navire {
 
 export class Destroyer extends Navire{
     constructor(){
-        super('Destroyer', 15, 2, 5, 5, 2);
+        super('Destroyer', 15, 2, 5, 5, 2, 2);
     }
 }
 
 export class SousMarin extends Navire{
     constructor(){
-        super('SousMarin', 14, 12, 3, 4, 4);
+        super('SousMarin', 14, 12, 3, 4, 4, 1);
     }
 }
 
 export class Fregate extends Navire{
     constructor(){
-        super('Fregate', 20, 4, 8, 3, 6);
+        super('Fregate', 20, 4, 8, 3, 6, 3);
     }
 }
+
+getPortee(){ return this.portee }
