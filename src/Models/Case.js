@@ -22,4 +22,11 @@ export default class Case{
     vider(){
         this.contenu = null;
     }
+
+    diffCoord( point ){
+        if(! (point instanceof Case) )
+            throw TypeError("Wrong argument type Case: diffCoord")
+
+        return Math.abs( this.getX() - point.getX() ) + Math.abs( this.getY() - point.getY() )
+    }
 }
