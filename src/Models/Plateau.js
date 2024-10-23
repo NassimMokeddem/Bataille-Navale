@@ -36,6 +36,18 @@ export default class Plateau {
         }
     }
 
+    verifPortee(pointA, pointB, portee){
+        if(! (pointA instanceof Case))
+            throw TypeError("Wrong argument type pointA in Plateau: verifPortee")
+
+        if(! (pointB instanceof Case))
+            throw TypeError("Wrong argument type pointB in Plateau: verifPortee")
+
+        if(pointA.diffCoord(pointB) <= portee)
+            return true
+        else return false
+    }
+
     /*
     setCaseContentPlacerNavire(x, y, contenu) {
         if (x >= 0 && x < this.nlong && y >= 0 && y < this.nlarg) {
