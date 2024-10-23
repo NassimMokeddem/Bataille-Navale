@@ -1,4 +1,5 @@
 import Case from "./Case.js";
+import { Navire } from "./Navire.js";
 
 export default class Plateau {
     constructor(nlong, nlarg) {
@@ -46,6 +47,40 @@ export default class Plateau {
         if(pointA.diffCoord(pointB) <= portee)
             return true
         else return false
+    }
+
+    tirerNavire(attaquant, defenseur, cAttaquant, cDefenseur){
+        if(! (attaquant instanceof Navire))
+            throw TypeError("Wrong argument type attaquant in Plateau: tirerNavire")
+
+        /*
+        *  TO DO
+        *  Reste à ajouter si c'est une base
+        */
+        if(! (defenseur instanceof Navire))
+            throw TypeError("Wrong argument type defenseur in Plateau: tirerNavire")
+
+        if(! (cAttaquant instanceof Case) )
+            throw TypeError("Wrong argument type cAttaquant in Plateau: tirerNavire")
+
+        if(! (cDefenseur instanceof Case) )
+            throw TypeError("Wrong argument type cDefenseur in Plateau: tirerNavire")
+
+        if(! this.verifPortee(cAttaquant, cDefenseur, attaquant.getPortee()))
+            throw Error("The attacker doesn\'t have enough range")
+
+        try{
+            attaquant.tirer(defenseur);
+        }
+        catch(err ){
+            if(err instanceof TypeError)
+                throw TypeError("Wrong argument type defenseur in Plateau: tirerNavire\nWent through the first control of Plateau: tirerNavire")
+        }
+
+        if(defenseur.estDetruit())
+            cDefenseur.vider();
+
+        return defenseur
     }
 
     /*
