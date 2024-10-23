@@ -74,7 +74,7 @@ export default class Service{
         else return false
     }
 
-    tirer(attaquant, defenseur){
+    appliqueDegat(attaquant, defenseur){
         /*
         *  TO DO
         *  Reste à ajouter si c'est une base
@@ -102,14 +102,14 @@ export default class Service{
         else defenseur.setSante(0)
     }
 
-    tirerNavire(attaquant, defenseur, cAttaquant, cDefenseur){
-        if(! (attaquant instanceof Navire))
-            throw TypeError("Wrong argument type attaquant in Plateau: tirerNavire")
-
+    tirer(attaquant, defenseur, cAttaquant, cDefenseur){
         /*
         *  TO DO
         *  Reste à ajouter si c'est une base
         */
+        if(! (attaquant instanceof Navire))
+            throw TypeError("Wrong argument type attaquant in Plateau: tirerNavire")
+
         if(! (defenseur instanceof Navire))
             throw TypeError("Wrong argument type defenseur in Plateau: tirerNavire")
 
@@ -123,7 +123,7 @@ export default class Service{
             throw Error("The attacker doesn\'t have enough range")
 
         try{
-            this.tirer(attaquant, defenseur);
+            this.appliqueDegat(attaquant, defenseur);
         }
         catch(err ){
             if(err instanceof TypeError)
