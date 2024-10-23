@@ -9,6 +9,8 @@ export default class Case{
 
     getY(){ return this.y }
 
+    getContenu(){ return this.contenu }
+
     estVide(){
         return this.contenu === null;
     }
