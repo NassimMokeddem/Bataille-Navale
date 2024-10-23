@@ -37,6 +37,8 @@ export class Navire {
     getArmure(){ return this.armure }
     
     getSante(){ return this.sante }
+
+    setSante(sante){ this.sante = sante }
     
     estDetruit(){
         return this.sante <= 0;
