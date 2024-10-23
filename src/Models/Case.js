@@ -7,6 +7,8 @@ export default class Case{
 
     getX(){ return this.x }
 
+    getY(){ return this.y }
+
     estVide(){
         return this.contenu === null;
     }
