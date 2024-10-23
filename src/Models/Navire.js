@@ -26,10 +26,18 @@ export class Navire {
             obj.pm != this.pm || 
             obj.pa != this.pa ||
             obj.portee != this.portee ) return false;
+            
+            return true;
+        }
 
-        return true;
-    }
-
+    getPortee(){ return this.portee }
+    
+    getDegat(){ return this.degat }
+    
+    getArmure(){ return this.armure }
+    
+    getSante(){ return this.sante }
+    
     estDetruit(){
         return this.sante <= 0;
     }
@@ -52,9 +60,3 @@ export class Fregate extends Navire{
         super('Fregate', 20, 4, 8, 3, 6, 3);
     }
 }
-
-getPortee(){ return this.portee }
-
-getDegat(){ return this.degat }
-
-getArmure(){ return this.armure }
