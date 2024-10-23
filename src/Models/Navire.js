@@ -45,6 +45,10 @@ export class Navire {
     }
 
     static calculDegat(attaquant, defenseur){
+        /*
+        *  TO DO
+        *  Reste à ajouter si c'est une base
+        */
         if(! (attaquant instanceof Navire))
             throw TypeError("Wrong argument type attaquant in Navire: calculDegat")
 
