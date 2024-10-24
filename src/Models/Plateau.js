@@ -1,12 +1,32 @@
 import Case from "./Case.js";
 import { Navire } from "./Navire.js";
 
+/**
+ * @module Plateau
+ */
+
+/**
+ * @property {Int} nlong - Number of rows
+ * @property {Int} nlarg - Number of columns
+ * @property {Array<Case>} grille - The board of the game in 2 dimensions
+ * 
+ * 
+ * @description Represent a board
+ */
+
 export default class Plateau {
+    /**
+     * @constructs 
+     */
     constructor(nlong, nlarg) {
         this.nlong = nlong;
         this.nlarg = nlarg;
         this.grille = this.initialiserGrille(nlarg, nlong);
     }
+
+    /**
+     * @private
+     */
     initialiserGrille(nlong, nlarg){
         const grille = new Array();
         for(let i=0; i < nlong; i++){
@@ -21,6 +41,9 @@ export default class Plateau {
         return grille;
     }
 
+    /**
+     * @private
+     */
     getCase(x, y) {
         if (x >= 0 && x < this.nlong && y >= 0 && y < this.nlarg) {
             return this.grille[x][y];
@@ -29,6 +52,12 @@ export default class Plateau {
         }
     }
 
+    /**
+     * @public
+     * @param {Int} x - The x coordinate
+     * @param {Int} y - The y coordinate
+     * @param {obj} contenu - The object to place in the board
+     */
     setCaseContent(x, y, contenu) {
         if (x >= 0 && x < this.nlong && y >= 0 && y < this.nlarg) {
             this.grille[x][y].contenu = contenu;
