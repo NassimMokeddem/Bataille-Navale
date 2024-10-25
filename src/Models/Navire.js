@@ -7,6 +7,7 @@
  * @property {Int} pm - Move points of the boat
  * @property {Int} pa - Action points of the boat
  * @property {Int} portee - Range of the boat
+ * @property {Array<Int>} dimension - Specify the dimensions of the boat
  * 
 *
 * @description Represent a boat
@@ -18,7 +19,7 @@ export class Navire {
      * @method estDetruit
      * 
      */
-    constructor(type, sante, degat, armure, pm, pa, portee){
+    constructor(type, sante, degat, armure, pm, pa, portee, dimension){
         this.type = type;
         this.sante = sante;
         this.degat = degat;
@@ -26,6 +27,7 @@ export class Navire {
         this.pm = pm;
         this.pa = pa;
         this.portee = portee;
+        this.dimension = [dimension[0], dimension[1]]
     }
 
     /**
@@ -39,7 +41,10 @@ export class Navire {
             obj.armure != this.armure || 
             obj.pm != this.pm || 
             obj.pa != this.pa ||
-            obj.portee != this.portee ) return false;
+            obj.portee != this.portee ||
+            obj.dimension[0] != this.dimension[0] ||
+            obj.dimension[1] != this.dimension[1]
+        ) return false;
             
             return true;
         }
@@ -98,7 +103,7 @@ export class Destroyer extends Navire{
      * @constructs
     */
     constructor(){
-        super('Destroyer', 15, 2, 5, 5, 2, 2);
+        super('Destroyer', 15, 2, 5, 5, 2, 2, [2, 3]);
     }
 }
 
@@ -121,7 +126,7 @@ export class SousMarin extends Navire{
      * @constructs
      */
     constructor(){
-        super('SousMarin', 14, 12, 3, 4, 4, 1);
+        super('SousMarin', 14, 12, 3, 4, 4, 1, [1, 2]);
     }
 }
 
@@ -146,6 +151,6 @@ export class Fregate extends Navire{
      * 
      */
     constructor(){
-        super('Fregate', 20, 4, 8, 3, 6, 3);
+        super('Fregate', 20, 4, 8, 3, 6, 3, [2, 4]);
     }
 }
