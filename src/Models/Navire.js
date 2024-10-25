@@ -72,6 +72,11 @@ export class Navire {
     /**
      * @private
      */
+    getDimension(){ return this.dimension }
+
+    /**
+     * @private
+     */
     setSante(sante){ this.sante = sante }
     
     /**
@@ -103,7 +108,7 @@ export class Destroyer extends Navire{
      * @constructs
     */
     constructor(){
-        super('Destroyer', 15, 2, 5, 5, 2, 2, [2, 3]);
+        super('Destroyer', 15, 2, 5, 5, 2, 2, [1, 2]);
     }
 }
 
@@ -126,7 +131,7 @@ export class SousMarin extends Navire{
      * @constructs
      */
     constructor(){
-        super('SousMarin', 14, 12, 3, 4, 4, 1, [1, 2]);
+        super('SousMarin', 14, 12, 3, 4, 4, 1, [1, 1]);
     }
 }
 
@@ -151,6 +156,6 @@ export class Fregate extends Navire{
      * 
      */
     constructor(){
-        super('Fregate', 20, 4, 8, 3, 6, 3, [2, 4]);
+        super('Fregate', 20, 4, 8, 3, 6, 3, [1, 3]);
     }
 }
