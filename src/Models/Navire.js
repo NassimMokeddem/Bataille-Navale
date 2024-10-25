@@ -7,6 +7,10 @@
  * @property {Int} pm - Move points of the boat
  * @property {Int} pa - Action points of the boat
  * @property {Int} portee - Range of the boat
+ * @property {Int} equipage - Number of crew members
+ * @property {Int} nourriture - Amount of food supplies
+ * @property {Int} maxEquipage - Max Number of crew members
+ * @property {Int} maxNourriture - Max Amount of food supplies
  * 
 *
 * @description Represent a boat
@@ -18,7 +22,7 @@ export class Navire {
      * @method estDetruit
      * 
      */
-    constructor(type, sante, degat, armure, pm, pa, portee){
+    constructor(type, sante, degat, armure, pm, pa, portee, equipage, nourriture, maxEquipage, maxNourriture) {
         this.type = type;
         this.sante = sante;
         this.degat = degat;
@@ -26,6 +30,10 @@ export class Navire {
         this.pm = pm;
         this.pa = pa;
         this.portee = portee;
+        this.equipage = equipage;
+        this.nourriture = nourriture;
+        this.maxEquipage = maxEquipage;
+        this.maxNourriture = maxNourriture;
     }
 
     /**
@@ -70,6 +78,36 @@ export class Navire {
     setSante(sante){ this.sante = sante }
     
     /**
+     * Replenishes the food supplies up to the maximum capacity
+     * @param {Int} quantite - The amount of food to add
+     */
+    reapprovisionnerNourriture(quantite) {
+        if (quantite < 0) throw new Error("La quantité ne peut pas être négative.");
+        
+        this.nourriture = Math.min(this.nourriture + quantite, this.maxNourriture);
+    }
+
+    /**
+     * @returns {Int} Returns the number of crew members
+     */
+    getEquipage() { return this.equipage; }
+
+    /**
+     * @returns {Int} Returns the amount of food supplies
+     */
+    getNourriture() { return this.nourriture; }
+
+    /**
+     * @returns {Int} Returns the maximum crew capacity
+     */
+    getMaxEquipage() { return this.maxEquipage; }
+
+    /**
+     * @returns {Int} Returns the maximum food capacity
+     */
+    getMaxNourriture() { return this.maxNourriture; }
+
+    /**
      * @returns {boolean} Returns if the boat is destroyed or not by his lifepoints remaining
      */
     estDetruit(){
@@ -98,7 +136,7 @@ export class Destroyer extends Navire{
      * @constructs
     */
     constructor(){
-        super('Destroyer', 15, 2, 5, 5, 2, 2);
+        super('Destroyer', 15, 2, 5, 5, 2, 2, 10, 100, 10, 100);
     }
 }
 
@@ -121,7 +159,7 @@ export class SousMarin extends Navire{
      * @constructs
      */
     constructor(){
-        super('SousMarin', 14, 12, 3, 4, 4, 1);
+        super('SousMarin', 14, 12, 3, 4, 4, 1, 5, 50, 5, 50);
     }
 }
 
@@ -146,6 +184,6 @@ export class Fregate extends Navire{
      * 
      */
     constructor(){
-        super('Fregate', 20, 4, 8, 3, 6, 3);
+        super('Fregate', 20, 4, 8, 3, 6, 3, 15, 150, 15, 150);
     }
 }
