@@ -30,9 +30,17 @@ export default class Service{
 
     updatePlateau(x, y, contenu) {
         if (!this.plateau) {
-            throw new Error("No plateau found. Create a plateau first.");
+        throw new Error("No plateau found. Create a plateau first.");
         }
-        this.plateau.setCaseContent(x, y, contenu);
+        if (! (contenu instanceof Navire)){
+        throw new TypeError("Bad type of contenu in Service: updatePlate    au") 
+        }
+
+        for(let i=0; i<contenu.getDimension()[0]; i++){
+            for(let j=0; j<contenu.getDimension()[1]; j++){
+                this.getPlateau().setCaseContent(x+i, y+j, contenu)
+            }
+        }
     }
 
     calculDegat(attaquant, defenseur){
