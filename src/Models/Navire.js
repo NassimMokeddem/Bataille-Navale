@@ -22,6 +22,7 @@ export class Navire {
     constructor(type, sante, degat, armure, pm, pa, portee, dimension){
         this.type = type;
         this.sante = sante;
+        this.santeMax = sante
         this.degat = degat;
         this.armure = armure;
         this.pm = pm;
@@ -68,6 +69,11 @@ export class Navire {
      * @private
      */
     getSante(){ return this.sante }
+    
+    /**
+     * @private
+     */
+    getSanteMax(){ return this.santeMax }
 
     /**
      * @private
@@ -101,6 +107,7 @@ export class Navire {
  *  <li>pm -> 5</li>
  *  <li>pa -> 2</li>
  *  <li>portee -> 2</li>
+ *  <li>dimension -> [1, 2]</li>
  * </ul>
  */
 export class Destroyer extends Navire{
@@ -124,6 +131,7 @@ export class Destroyer extends Navire{
  *  <li>pm -> 4</li>
  *  <li>pa -> 4</li>
  *  <li>portee -> 1</li>
+ *  <li>dimension -> [1, 1]</li>
  * </ul>
  */
 export class SousMarin extends Navire{
@@ -148,6 +156,7 @@ export class SousMarin extends Navire{
  *  <li>pm -> 3</li>
  *  <li>pa -> 6</li>
  *  <li>portee -> 3</li>
+ *  <li>dimension -> [1, 3]</li>
  * </ul>
  */
 export class Fregate extends Navire{
@@ -158,4 +167,43 @@ export class Fregate extends Navire{
     constructor(){
         super('Fregate', 20, 4, 8, 3, 6, 3, [1, 3]);
     }
+}
+
+/**
+ * @augments Navire
+ * @description Represent a Transporter to resupply other boats*
+ * <br>Here are the stats : 
+ * <ul>
+ *  <li>type -> Transporteur</li>
+ *  <li>sante -> 1</li> 
+ *  <li>degat -> 0</li>
+ *  <li>armure -> 0</li>
+ *  <li>pm -> 2</li>
+ *  <li>pa -> 1</li>
+ *  <li>portee -> 1</li>
+ *  <li>dimension -> [1, 1]</li>
+ * </ul>
+ */
+
+/**
+ * TO DO
+ * A ajouter dans Service pour permettre de le poser sur 
+ * le plateau en même temps de le créer
+ */
+export class Transporteur extends Navire{
+    /**
+     * @constructs
+     * 
+     * @param {Int} x - Target to ressuply coordinate x
+     * @param {Int} y - Target to ressuply coordinate y
+     */
+    constructor(x, y){
+        super('Transporteur', 1, 0, 0, 2, 1, 1, [1, 1]);
+        this.target = [x, y]
+    }
+
+    /**
+     * @private
+     */
+
 }
