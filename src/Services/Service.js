@@ -1,6 +1,7 @@
 import { Navire, Destroyer, SousMarin, Fregate} from "../Models/Navire.js"
 import Plateau from "../Models/Plateau.js";
 import Case from "../Models/Case.js";
+import BaseNavale from "../Models/BaseNavale.js";
 
 export default class Service{
     createNavire(type){
@@ -21,6 +22,25 @@ export default class Service{
         return this.plateau;
     }
 
+    createBaseNavale(nbJoueur) {
+        if(!this.plateau){
+            throw new Error("No plateau found. Create a plateau first in Service: createBaseNavale.");
+        }
+
+        if(nbJoueur == 1){
+            this.getPlateau().
+                setCaseContent(0, 0, new BaseNavale());
+        }
+        if(nbJoueur == 2){
+            this.getPlateau().
+                setCaseContent(this.getPlateau().nlong-1, this.getPlateau().nlarg-1, new BaseNavale());
+        }
+        else{
+            console.log(nbJoueur);
+            throw new Error("Bad argument nbJoueur in Service: createBaseNavale");
+        }
+    }
+
     getPlateau() {
         if (!this.plateau) {
             throw new Error("No plateau found. Create a plateau first.");
@@ -28,11 +48,31 @@ export default class Service{
         return this.plateau;
     }
 
+    getBaseNavale(nbJoueur){
+        if(nbJoueur == 1){
+            return this.getPlateau().getCase(0,0).getContenu()
+        }
+        if(nbJoueur == 2){
+            return this.getPlateau().getCase(this.getPlateau().nlong-1,this.getPlateau().nlarg-1).getContenu()
+        }
+        else{
+            throw new Error("Bad argument nbJoueur in Service: getBaseNavale");
+        }
+    }
+
     updatePlateau(x, y, contenu) {
         if (!this.plateau) {
-            throw new Error("No plateau found. Create a plateau first.");
+        throw new Error("No plateau found. Create a plateau first.");
         }
-        this.plateau.setCaseContent(x, y, contenu);
+        if (! (contenu instanceof Navire)){
+        throw new TypeError("Bad type of contenu in Service: updatePlate    au") 
+        }
+
+        for(let i=0; i<contenu.getDimension()[0]; i++){
+            for(let j=0; j<contenu.getDimension()[1]; j++){
+                this.getPlateau().setCaseContent(x+i, y+j, contenu)
+            }
+        }
     }
 
     calculDegat(attaquant, defenseur){
@@ -155,5 +195,24 @@ export default class Service{
             plateau.grille[x2][y2].contenu.sante = plateau.grille[x2][y2].contenu.sante - plateau.grille[x1][y1].contenu.degat;
             res.json({ message: `x:${x1} y:${y1} tire sur la case x:${x2} y:${y2}`, plateau });
         }
+    }
+
+    repare(navire, nbJoueur){
+        /**
+         * TO DO
+         * Reste à vérifier si le bateau appartient au bon joueur
+         */
+        if(! (navire instanceof Navire)){
+            throw new TypeError("Bad argument navire in BaseNavale: resupplyNavire")
+        }
+
+        try{
+            this.getBaseNavale(nbJoueur).repareNavire(navire);
+        }
+        catch(err ){
+            console.log(err.stack)
+            throw new Error("Error on Service: resupply");
+        }
+        
     }
 }

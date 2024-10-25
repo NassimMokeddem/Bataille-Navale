@@ -11,6 +11,7 @@
  * @property {Int} nourriture - Amount of food supplies
  * @property {Int} maxEquipage - Max Number of crew members
  * @property {Int} maxNourriture - Max Amount of food supplies
+ * @property {Array<Int>} dimension - Specify the dimensions of the boat
  * 
 *
 * @description Represent a boat
@@ -22,9 +23,10 @@ export class Navire {
      * @method estDetruit
      * 
      */
-    constructor(type, sante, degat, armure, pm, pa, portee, equipage, nourriture, maxEquipage, maxNourriture) {
+    constructor(type, sante, degat, armure, pm, pa, portee, equipage, nourriture, maxEquipage, maxNourriture, dimension) {
         this.type = type;
         this.sante = sante;
+        this.santeMax = sante
         this.degat = degat;
         this.armure = armure;
         this.pm = pm;
@@ -34,6 +36,7 @@ export class Navire {
         this.nourriture = nourriture;
         this.maxEquipage = maxEquipage;
         this.maxNourriture = maxNourriture;
+        this.dimension = [dimension[0], dimension[1]]
     }
 
     /**
@@ -47,7 +50,10 @@ export class Navire {
             obj.armure != this.armure || 
             obj.pm != this.pm || 
             obj.pa != this.pa ||
-            obj.portee != this.portee ) return false;
+            obj.portee != this.portee ||
+            obj.dimension[0] != this.dimension[0] ||
+            obj.dimension[1] != this.dimension[1]
+        ) return false;
             
             return true;
         }
@@ -71,6 +77,16 @@ export class Navire {
      * @private
      */
     getSante(){ return this.sante }
+    
+    /**
+     * @private
+     */
+    getSanteMax(){ return this.santeMax }
+
+    /**
+     * @private
+     */
+    getDimension(){ return this.dimension }
 
     /**
      * @private
@@ -129,6 +145,7 @@ export class Navire {
  *  <li>pm -> 5</li>
  *  <li>pa -> 2</li>
  *  <li>portee -> 2</li>
+ *  <li>dimension -> [1, 2]</li>
  * </ul>
  */
 export class Destroyer extends Navire{
@@ -136,7 +153,7 @@ export class Destroyer extends Navire{
      * @constructs
     */
     constructor(){
-        super('Destroyer', 15, 2, 5, 5, 2, 2, 10, 100, 10, 100);
+        super('Destroyer', 15, 2, 5, 5, 2, 2, 10, 100, 10, 100, [1, 2]);
     }
 }
 
@@ -152,6 +169,7 @@ export class Destroyer extends Navire{
  *  <li>pm -> 4</li>
  *  <li>pa -> 4</li>
  *  <li>portee -> 1</li>
+ *  <li>dimension -> [1, 1]</li>
  * </ul>
  */
 export class SousMarin extends Navire{
@@ -159,7 +177,7 @@ export class SousMarin extends Navire{
      * @constructs
      */
     constructor(){
-        super('SousMarin', 14, 12, 3, 4, 4, 1, 5, 50, 5, 50);
+        super('SousMarin', 14, 12, 3, 4, 4, 1, 5, 50, 5, 50, [1, 1]);
     }
 }
 
@@ -176,6 +194,7 @@ export class SousMarin extends Navire{
  *  <li>pm -> 3</li>
  *  <li>pa -> 6</li>
  *  <li>portee -> 3</li>
+ *  <li>dimension -> [1, 3]</li>
  * </ul>
  */
 export class Fregate extends Navire{
@@ -184,6 +203,84 @@ export class Fregate extends Navire{
      * 
      */
     constructor(){
-        super('Fregate', 20, 4, 8, 3, 6, 3, 15, 150, 15, 150);
+        super('Fregate', 20, 4, 8, 3, 6, 3, 15, 150, 15, 150, [1, 3]);
     }
+}
+
+/**
+ * @augments Navire
+ * @description Represent a Transporter to resupply other boats*
+ * <br>Here are the stats : 
+ * <ul>
+ *  <li>type -> Transporteur</li>
+ *  <li>sante -> 1</li> 
+ *  <li>degat -> 0</li>
+ *  <li>armure -> 0</li>
+ *  <li>pm -> 2</li>
+ *  <li>pa -> 1</li>
+ *  <li>portee -> 1</li>
+ *  <li>dimension -> [1, 1]</li>
+ * </ul>
+ */
+
+/**
+ * TO DO
+ * A ajouter dans Service pour permettre de le poser sur 
+ * le plateau en même temps de le créer
+ */
+export class Transporteur extends Navire{
+    /**
+     * @constructs
+     * 
+     * @param {Int} x - Target to ressuply coordinate x
+     * @param {Int} y - Target to ressuply coordinate y
+     */
+    constructor(x, y){
+        super('Transporteur', 1, 0, 0, 2, 1, 1, [1, 1]);
+        this.target = [x, y]
+    }
+
+    /**
+     * @private
+     */
+
+}
+
+/**
+ * @augments Navire
+ * @description Represent a Transporter to resupply other boats*
+ * <br>Here are the stats : 
+ * <ul>
+ *  <li>type -> Transporteur</li>
+ *  <li>sante -> 1</li> 
+ *  <li>degat -> 0</li>
+ *  <li>armure -> 0</li>
+ *  <li>pm -> 2</li>
+ *  <li>pa -> 1</li>
+ *  <li>portee -> 1</li>
+ *  <li>dimension -> [1, 1]</li>
+ * </ul>
+ */
+
+/**
+ * TO DO
+ * A ajouter dans Service pour permettre de le poser sur 
+ * le plateau en même temps de le créer
+ */
+export class Transporteur extends Navire{
+    /**
+     * @constructs
+     * 
+     * @param {Int} x - Target to ressuply coordinate x
+     * @param {Int} y - Target to ressuply coordinate y
+     */
+    constructor(x, y){
+        super('Transporteur', 1, 0, 0, 2, 1, 1, [1, 1]);
+        this.target = [x, y]
+    }
+
+    /**
+     * @private
+     */
+
 }
