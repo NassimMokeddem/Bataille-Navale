@@ -1,0 +1,51 @@
+image: docker:latest
+
+services:
+  - docker:dind
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_HUB_IMAGE: "$DOCKER_HUB_USERNAME/$CI_PROJECT_NAME"
+  DOCKER_HUB_IMAGE_STAGE: "$DOCKER_HUB_IMAGE:stage"
+  DOCKER_HUB_IMAGE_PRODUCTION: "$DOCKER_HUB_IMAGE:production"
+  SERVER_SSH_USER: "$SSH_USER"
+  SERVER_IP: "$SSH_IP"
+
+stages:
+  - test
+  - build
+  - deploy
+
+before_script:
+  - apk add --no-cache rsync openssh-client
+
+test:
+  stage: test
+  script:
+    - echo "Testing the app"
+
+  only:
+    - develop
+    - test
+    - stage
+    - master
+    - main
+
+build:
+  stage: build
+  script:
+    - echo "Building the app"
+
+  only:
+    - stage
+    - master
+    - main
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying the app"
+
+  only:
+    - stage
+    - master
+    - main
