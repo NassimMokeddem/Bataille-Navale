@@ -22,6 +22,15 @@ export default class Service{
         return this.plateau;
     }
 
+
+    /**
+     * 
+     * @param {Int} nbJoueur 
+     */
+    /**
+     * TO DO
+     * if on nbJoueur = 1 doesn't work
+     */
     createBaseNavale(nbJoueur) {
         if(!this.plateau){
             throw new Error("No plateau found. Create a plateau first in Service: createBaseNavale.");
