@@ -21,6 +21,9 @@ export default class BaseNavale{
      * @method repareNavire
      */
     constructor(idJoueur){
+        if( idJoueur != 1 && idJoueur != 2){
+            throw new Error("Wrong argument idJoueur in BaseNavale: constructor ")
+        } 
         this.dimension = [2,2];
         this.idJoueur = idJoueur;
         this.argent = 100;
