@@ -102,8 +102,14 @@ export default class Service{
         throw new TypeError("Bad type of contenu in Service: updatePlateau") 
         }
 
-        for(let i=0; i<contenu.getDimension()[0]; i++){
-            for(let j=0; j<contenu.getDimension()[1]; j++){
+        const dimension = contenu.getDimension();
+
+        if(! (this.getPlateau().enoughSpace(x, y, dimension))){
+            throw new Error("Not enough space to put the object in Service: updatePlateau")
+        }
+
+        for(let i=0; i<dimension.at(0); i++){
+            for(let j=0; j<dimension.at(1); j++){
                 this.getPlateau().setCaseContent(x+i, y+j, contenu)
             }
         }
