@@ -1,8 +1,11 @@
 import { Navire, Transporteur } from "./Navire.js"
 
 export default class BaseNavale{
-    constructor(){
-        this.dimension = [2,2]
+    constructor(idJoueur){
+        this.dimension = [2,2];
+        this.idJoueur = idJoueur;
+        this.argent = 100;
+        this.naviresJ = new Array();
     }
 
     resupplyNavire(navire){

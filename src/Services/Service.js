@@ -31,24 +31,23 @@ export default class Service{
      * TO DO
      * if on nbJoueur = 1 doesn't work
      */
-    createBaseNavale(nbJoueur) {
+    createBaseNavale(idJoueur) {
         if(!this.plateau){
             throw new Error("No plateau found. Create a plateau first in Service: createBaseNavale.");
         }
 
-        if(nbJoueur == 1){
+        if(idJoueur == 1){
             this.getPlateau().
-                setCaseContent(0, 0, new BaseNavale());
+                setCaseContent(0, 0, new BaseNavale(idJoueur));
             return
         }
-        if(nbJoueur == 2){
+        if(idJoueur == 2){
             this.getPlateau().
-                setCaseContent(this.getPlateau().nlong-1, this.getPlateau().nlarg-1, new BaseNavale());
+                setCaseContent(this.getPlateau().nlong-1, this.getPlateau().nlarg-1, new BaseNavale(idJoueur));
             return
         }
         else{
-            console.log(nbJoueur);
-            throw new Error("Bad argument nbJoueur in Service: createBaseNavale");
+            throw new Error("Bad argument idJoueur in Service: createBaseNavale");
         }
     }
 
