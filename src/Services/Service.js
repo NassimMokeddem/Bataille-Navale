@@ -39,10 +39,12 @@ export default class Service{
         if(nbJoueur == 1){
             this.getPlateau().
                 setCaseContent(0, 0, new BaseNavale());
+            return
         }
         if(nbJoueur == 2){
             this.getPlateau().
                 setCaseContent(this.getPlateau().nlong-1, this.getPlateau().nlarg-1, new BaseNavale());
+            return
         }
         else{
             console.log(nbJoueur);
