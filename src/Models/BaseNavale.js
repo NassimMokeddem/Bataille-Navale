@@ -1,6 +1,25 @@
 import { Navire, Transporteur } from "./Navire.js"
 
+/**
+ * @module BaseNavale
+ */
+
+/**
+ * @property {Array<Int>} dimension - Dimension of a navy base
+ * @property {Int} idJoueur - Identifier for player
+ * @property {Int} argent - Money in the game of the player
+ * @property {Array<Navire>} naviresJ - Boats the player got
+ * 
+ * @description Represent a navy base, it is the headquarters for the player's fleet
+ */
+
 export default class BaseNavale{
+    /**
+     * @constructs
+     * 
+     * @method resupplyNavire
+     * @method repareNavire
+     */
     constructor(idJoueur){
         this.dimension = [2,2];
         this.idJoueur = idJoueur;
