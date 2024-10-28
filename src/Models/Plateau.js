@@ -21,7 +21,7 @@ export default class Plateau {
     constructor(nlong, nlarg) {
         this.nlong = nlong;
         this.nlarg = nlarg;
-        this.grille = this.initialiserGrille(nlarg, nlong);
+        this.grille = this.initialiserGrille(nlong, nlarg);
     }
 
     /**
@@ -45,8 +45,8 @@ export default class Plateau {
      * @private
      */
     getCase(x, y) {
-        if (x >= 0 && x < this.nlong && y >= 0 && y < this.nlarg) {
-            return this.grille[x][y];
+        if (x >= 0 && x < this.nlarg && y >= 0 && y < this.nlong) {
+            return this.grille[y][x];
         } else {
             throw new Error("Invalid coordinates");
         }
