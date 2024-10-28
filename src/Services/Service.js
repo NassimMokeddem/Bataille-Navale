@@ -27,23 +27,17 @@ export default class Service{
      * 
      * @param {Int} nbJoueur 
      */
-    /**
-     * TO DO
-     * if on nbJoueur = 1 doesn't work
-     */
     createBaseNavale(idJoueur) {
         if(!this.plateau){
             throw new Error("No plateau found. Create a plateau first in Service: createBaseNavale.");
         }
 
         if(idJoueur == 1){
-            this.getPlateau().
-                setCaseContent(0, 0, new BaseNavale(idJoueur));
+            this.updatePlateau(0, 0, new BaseNavale(idJoueur));
             return
         }
         if(idJoueur == 2){
-            this.getPlateau().
-                setCaseContent(this.getPlateau().nlong-1, this.getPlateau().nlarg-1, new BaseNavale(idJoueur));
+            this.updatePlateau(this.getPlateau().nlarg-2, this.getPlateau().nlong-2, new BaseNavale(idJoueur));
             return
         }
         else{
@@ -63,7 +57,7 @@ export default class Service{
             return this.getPlateau().getCase(0,0).getContenu()
         }
         if(idJoueur == 2){
-            return this.getPlateau().getCase(this.getPlateau().nlong-1,this.getPlateau().nlarg-1).getContenu()
+            return this.getPlateau().getCase(this.getPlateau().nlarg-2,this.getPlateau().nlong-2).getContenu()
         }
         else{
             throw new Error("Bad argument nbJoueur in Service: getBaseNavale");
@@ -104,8 +98,8 @@ export default class Service{
         if (!this.plateau) {
         throw new Error("No plateau found. Create a plateau first.");
         }
-        if (! (contenu instanceof Navire)){
-        throw new TypeError("Bad type of contenu in Service: updatePlate    au") 
+        if ((! (contenu instanceof Navire)) && (! (contenu instanceof BaseNavale))){
+        throw new TypeError("Bad type of contenu in Service: updatePlateau") 
         }
 
         for(let i=0; i<contenu.getDimension()[0]; i++){

@@ -36,6 +36,8 @@ export default class BaseNavale{
 
     getIdJoueur(){ return this.idJoueur }
 
+    getDimension(){ return this.dimension }
+
     setArgent(argent){ this.argent = argent }
 
     findNavire(navireSearch){

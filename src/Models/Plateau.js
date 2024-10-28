@@ -59,8 +59,8 @@ export default class Plateau {
      * @param {obj} contenu - The object to place in the board
      */
     setCaseContent(x, y, contenu) {
-        if (x >= 0 && x < this.nlong && y >= 0 && y < this.nlarg) {
-            this.grille[x][y].contenu = contenu;
+        if (x >= 0 && x < this.nlarg && y >= 0 && y < this.nlong) {
+            this.grille[y][x].contenu = contenu;
         } else {
             throw new Error("Invalid coordinates");
         }
