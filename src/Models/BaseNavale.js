@@ -38,6 +38,21 @@ export default class BaseNavale{
 
     setArgent(argent){ this.argent = argent }
 
+    findNavire(navireSearch){
+        if(! (navireSearch instanceof Navire)){
+            throw new TypeError("Bad argument type navireSearch in BaseNavale: findNavire")
+        }
+
+        const index = this.getNaviresJ().findIndex((navire) => navire.isEqual(navireSearch))
+
+        if(index == -1){
+            return null
+        }
+
+        return this.getNaviresJ().at(index)
+    }
+
+
     resupplyNavire(navire){
         /**
          * TO DO
