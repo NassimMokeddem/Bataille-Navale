@@ -73,22 +73,29 @@ export default class Service{
     buyNavire(idJoueur, type){
         var prix;
 
+        // Evaluation du prix
         switch(type) {
             case 'Destroyer':
                 prix = 20;
+                break;
             case 'SousMarin':
                 prix = 100;
+                break;
             case 'Fregate':
                 prix = 35;
+                break;
             default:
                 throw new Error("Bas argument type in Service: buyNavire");
         }
 
-        if(this.getPlateau().getBaseNavale(idJoueur).argent < prix){
+        if(this.getBaseNavale(idJoueur).argent < prix){
             return "Pas assez d'argent"
         }
+
+        //Modification ressource
+        this.getBaseNavale(idJoueur).argent -= prix;
         
-        this.getPlateau().getBaseNavale(idJoueur).naviresJ.push(this.createNavire(type))
+        this.getBaseNavale(idJoueur).naviresJ.push(this.createNavire(type))
     }
 
     updatePlateau(x, y, contenu) {
