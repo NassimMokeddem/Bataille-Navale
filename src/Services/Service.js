@@ -88,14 +88,16 @@ export default class Service{
                 throw new Error("Bas argument type in Service: buyNavire");
         }
 
-        if(this.getBaseNavale(idJoueur).argent < prix){
+        const argent = this.getBaseNavale(idJoueur).getArgent();
+
+        if(argent < prix){
             return "Pas assez d'argent"
         }
 
         //Modification ressource
-        this.getBaseNavale(idJoueur).argent -= prix;
+        this.getBaseNavale(idJoueur).setArgent(argent - prix);
         
-        this.getBaseNavale(idJoueur).naviresJ.push(this.createNavire(type))
+        this.getBaseNavale(idJoueur).getNaviresJ().push(this.createNavire(type))
     }
 
     updatePlateau(x, y, contenu) {

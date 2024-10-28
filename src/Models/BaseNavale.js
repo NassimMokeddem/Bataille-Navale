@@ -30,6 +30,14 @@ export default class BaseNavale{
         this.naviresJ = new Array();
     }
 
+    getArgent(){ return this.argent }
+
+    getNaviresJ(){ return this.naviresJ }
+
+    getIdJoueur(){ return this.idJoueur }
+
+    setArgent(argent){ this.argent = argent }
+
     resupplyNavire(navire){
         /**
          * TO DO
