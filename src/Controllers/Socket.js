@@ -12,6 +12,11 @@ function socket(io, service){
         service.startGame();
         socket.emit('game created', service.getPlateau());
 
+        socket.on('addBoat', (data) => {
+            service.buyNavire(data.idJoueur, data.type)
+            socket.emit('boatAcquired', service.getPlateau());
+        })
+
         socket.on('disconnect', () => {
             console.log('User disconnected');
         });
