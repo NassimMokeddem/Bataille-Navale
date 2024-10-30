@@ -9,6 +9,9 @@ function socket(io, service){
     io.on('connection', (socket) =>{
         console.log(socket.id + ' connected')
 
+        service.startGame();
+        socket.emit('game created', service.getPlateau());
+
         socket.on('disconnect', () => {
             console.log('User disconnected');
         });
