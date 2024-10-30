@@ -1,9 +1,24 @@
 import { Navire, Destroyer, SousMarin, Fregate} from "../Models/Navire.js"
 import Plateau from "../Models/Plateau.js";
 import Case from "../Models/Case.js";
+import BaseNavale from "../Models/BaseNavale.js";
 
 export default class Service{
-    createNavire(type){
+    /**
+     * 
+     * passé en méthode privé comme ça on aura pas
+     * de problème pour relier un bateau à un joueur
+     * 
+     * Il faut garder la relation BaseNavale contient
+     * liste bateau détenu par le joueur
+     * 
+     * et de placer ces objets sur le Plateau
+     * 
+     * Sinon les modifications des objets que vous
+     * apporterez sur le Plateau ne sera pas vu dans
+     * la liste de BaseNavale du joueur
+     */
+    #createNavire(type){
         switch(type){
             case 'Destroyer':
                 return new Destroyer();
@@ -21,6 +36,29 @@ export default class Service{
         return this.plateau;
     }
 
+
+    /**
+     * 
+     * @param {Int} nbJoueur 
+     */
+    createBaseNavale(idJoueur) {
+        if(!this.plateau){
+            throw new Error("No plateau found. Create a plateau first in Service: createBaseNavale.");
+        }
+
+        if(idJoueur == 1){
+            this.updatePlateau(0, 0, new BaseNavale(idJoueur));
+            return
+        }
+        if(idJoueur == 2){
+            this.updatePlateau(this.getPlateau().nlarg-2, this.getPlateau().nlong-2, new BaseNavale(idJoueur));
+            return
+        }
+        else{
+            throw new Error("Bad argument idJoueur in Service: createBaseNavale");
+        }
+    }
+
     getPlateau() {
         if (!this.plateau) {
             throw new Error("No plateau found. Create a plateau first.");
@@ -28,11 +66,216 @@ export default class Service{
         return this.plateau;
     }
 
+    getBaseNavale(idJoueur){
+        if(idJoueur == 1){
+            return this.getPlateau().getCase(0,0).getContenu()
+        }
+        if(idJoueur == 2){
+            return this.getPlateau().getCase(this.getPlateau().nlarg-2,this.getPlateau().nlong-2).getContenu()
+        }
+        else{
+            throw new Error("Bad argument nbJoueur in Service: getBaseNavale");
+        }
+    }
+
+    /**
+     * Fait à l'arrache pas utilisable dans des cas plus généraux
+     * 
+     * Je pars du principe que dans les tableaux
+     * indice 0 = abscisses / coord x
+     * indice 1 = ordonnees / coord y
+     */
+    spaceBaseAvailable(idJoueur, dimension){
+        if(idJoueur != 1 && idJoueur != 2){
+            throw new Error("Bad argument nbJoueur in Service: spaceBaseAvailable")
+        }
+
+        if(! (dimension instanceof Array)){
+            throw new TypeError("Bad argument type dimension in Service: spaceBaseAvailable")
+        }
+
+
+        /**
+         * Initialisation des variables et constantes
+         */
+        var coordAvailable = false;
+
+        var base = null
+        try{
+            base = this.getBaseNavale(idJoueur);
+        }
+        catch(err ){
+            throw err
+        }
+
+        /**
+         * On va séparer la vérif en 2 cas car 2 joueurs
+         * et seulement 2 coord de base
+         */
+        if(idJoueur == 1){
+            //coordonée de la base du joueur 1 voir createBaseNavale
+            const coordBase = Array.of(0, 0);
+
+            // longueur
+            for(let yAxis=0; yAxis <= coordBase.at(1) + base.getDimension().at(1); yAxis++){
+                try{
+                    coordAvailable = this.getPlateau().enoughSpace(
+                                                        coordBase.at(0) + base.getDimension().at(0),
+                                                        yAxis,
+                                                        dimension
+                    )
+                }
+                catch(err ){
+                    throw err
+                }
+
+                if(coordAvailable == true){
+                    return Array.of(coordBase.at(0) + base.getDimension().at(0), yAxis)
+                }
+            }
+
+            //largeur
+            for(let xAxis=0; xAxis < coordBase.at(0) + base.getDimension().at(0); xAxis++){
+                try{
+                    coordAvailable = this.getPlateau().enoughSpace(
+                                                        xAxis,
+                                                        coordBase.at(1) + base.getDimension().at(1),
+                                                        dimension
+                    )
+                }
+                catch(err ){
+                    throw err
+                }
+
+                if(coordAvailable == true){
+                    return Array.of(xAxis, coordBase.at(1) + base.getDimension().at(1))
+                }
+            }
+        }
+
+        if(idJoueur == 2){
+            const coordBase = Array.of(this.getPlateau().nlarg-2, this.getPlateau().nlong-2);
+
+            //longueur
+            /**
+             * Ici je vais vérifier en fonction de la dimension
+             * de l'objet par rapport aux dimensions de la base
+             */
+            var yAxisGap = 0;
+            if(base.getDimension().at(1) < dimension.at(1)){
+                yAxisGap = dimension.at(1) - base.getDimension().at(1);
+            }
+            else { 
+                yAxisGap = 1; 
+            }
+
+            for(let yAxis = -yAxisGap; yAxis < base.getDimension().at(1); yAxis++){
+                try{
+                    coordAvailable = this.getPlateau().enoughSpace(
+                                                            coordBase.at(0) - dimension.at(0),
+                                                            coordBase.at(1) + yAxis,
+                                                            dimension
+                    )
+                }
+                catch(err ){
+                    if(err.message != "Invalid coordinates for this object in Plateau: enoughSpace"){
+                        throw err
+                    }
+                }
+
+                if(coordAvailable == true){
+                    return Array.of(coordBase.at(0) - dimension.at(0), coordBase.at(1) + yAxis)
+                }
+            }
+
+            //largeur
+            for(let xAxis=0; xAxis < base.getDimension().at(0); xAxis++){
+                for(let yAxis=1; yAxis <= dimension.at(1); yAxis++){
+                    try{
+                        coordAvailable = this.getPlateau().enoughSpace(
+                                                                coordBase.at(0) + xAxis,
+                                                                coordBase.at(1) - yAxis,
+                                                                dimension
+                        )
+                    }
+                    catch(err ){
+                        if(err.message != "Invalid coordinates for this object in Plateau: enoughSpace"){
+                            throw err
+                        }
+                    }
+
+                    if(coordAvailable == true){
+                        return Array.of(coordBase.at(0) + xAxis, coordBase.at(1) - yAxis)
+                    }
+                }
+
+            }
+        }
+
+        // Si on arrive là ça veut dire qu'il n'y a pas de place autour de la base
+        throw new Error("No space around BaseNavale in Service: spaceBaseAvailable");
+    }
+
+    buyNavire(idJoueur, type){
+        var prix;
+
+        // Evaluation du prix
+        switch(type) {
+            case 'Destroyer':
+                prix = 20;
+                break;
+            case 'SousMarin':
+                prix = 100;
+                break;
+            case 'Fregate':
+                prix = 35;
+                break;
+            default:
+                throw new Error("Bas argument type in Service: buyNavire");
+        }
+
+        const argent = this.getBaseNavale(idJoueur).getArgent();
+
+        if(argent < prix){
+            return "Pas assez d'argent"
+        }
+
+        //Modification ressource
+        this.getBaseNavale(idJoueur).setArgent(argent - prix);
+        
+        const navire = this.#createNavire(type);
+
+        this.getBaseNavale(idJoueur).getNaviresJ().push(navire);
+
+        try{
+            const coord = this.spaceBaseAvailable(idJoueur, navire.getDimension());
+
+            this.updatePlateau(coord.at(0), coord.at(1), navire)
+        }
+        catch(err ){
+            throw err
+        }
+    }
+
     updatePlateau(x, y, contenu) {
         if (!this.plateau) {
-            throw new Error("No plateau found. Create a plateau first.");
+        throw new Error("No plateau found. Create a plateau first.");
         }
-        this.plateau.setCaseContent(x, y, contenu);
+        if ((! (contenu instanceof Navire)) && (! (contenu instanceof BaseNavale))){
+        throw new TypeError("Bad type of contenu in Service: updatePlateau") 
+        }
+
+        const dimension = contenu.getDimension();
+
+        if(! (this.getPlateau().enoughSpace(x, y, dimension))){
+            throw new Error("Not enough space to put the object in Service: updatePlateau")
+        }
+
+        for(let i=0; i<dimension.at(0); i++){
+            for(let j=0; j<dimension.at(1); j++){
+                this.getPlateau().setCaseContent(x+i, y+j, contenu)
+            }
+        }
     }
 
     calculDegat(attaquant, defenseur){
@@ -155,5 +398,24 @@ export default class Service{
             plateau.grille[x2][y2].contenu.sante = plateau.grille[x2][y2].contenu.sante - plateau.grille[x1][y1].contenu.degat;
             res.json({ message: `x:${x1} y:${y1} tire sur la case x:${x2} y:${y2}`, plateau });
         }
+    }
+
+    repare(navire, nbJoueur){
+        /**
+         * TO DO
+         * Reste à vérifier si le bateau appartient au bon joueur
+         */
+        if(! (navire instanceof Navire)){
+            throw new TypeError("Bad argument navire in BaseNavale: resupplyNavire")
+        }
+
+        try{
+            this.getBaseNavale(nbJoueur).repareNavire(navire);
+        }
+        catch(err ){
+            console.log(err.stack)
+            throw new Error("Error on Service: resupply");
+        }
+        
     }
 }
