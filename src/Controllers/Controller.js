@@ -1,9 +1,14 @@
 import express from "express";
 import Service from "../Services/Service.js"
 import { Destroyer, Fregate, SousMarin } from "../Models/Navire.js";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from 'node:url';
+import socket from "./Socket.js";
 
 const router = express.Router();
 const service = new Service();
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 router.use(express.json());
 
@@ -61,6 +66,12 @@ router.put('/tirer', (req,res) => {
 
     const plateau = service.getPlateau();
     service.applyShot(x1, y1, x2, y2, res, plateau);
+})
+
+router.get('/start', (req, res) => {
+    res.sendFile(join(__dirname, '../ClientSide/client.html'))
+    const io = req.app.get('io');
+    socket(io, service);
 })
 
 router.all('*', (req, res) => {
