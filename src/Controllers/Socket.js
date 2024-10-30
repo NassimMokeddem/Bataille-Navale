@@ -5,6 +5,18 @@
  * @property {IO} io - Permet la communication avec les membres de l'instance
  * */
 
+function socket(io, service){
+    io.on('connection', (socket) =>{
+        console.log(socket.id + ' connected')
+
+        socket.on('disconnect', () => {
+            console.log('User disconnected');
+        });
+    });
+}
+
+export default socket;
+
 export class Socket{
 
     constructor(socket, io){
