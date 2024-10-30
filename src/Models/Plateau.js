@@ -14,6 +14,12 @@ import { Navire } from "./Navire.js";
  * @description Represent a board
  */
 
+/**
+ * ATTENTION
+ * Je suis parti du principe que pour placer un objet
+ * sur le plateau le placement commencera en haut à gauche
+ */
+
 export default class Plateau {
     /**
      * @constructs 
