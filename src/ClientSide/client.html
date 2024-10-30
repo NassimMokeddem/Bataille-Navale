@@ -1,0 +1,30 @@
+<body>
+    <pre id="json-data"></pre>
+
+    <button onclick="buyBoat()">Try it</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+    const socket = io();
+
+    socket.on('game created', (game) => {
+        const preElement = document.getElementById('json-data');
+        preElement.innerHTML = JSON.stringify(game);
+    })
+
+    socket.on('boatAcquired', (game) => {
+        const preElement = document.getElementById('json-data');
+        preElement.innerHTML = JSON.stringify(game);
+    })
+
+    function buyBoat(){
+        socket.emit('addBoat', {idJoueur: 1, type: 'Destroyer'});
+    }
+
+    // Ne fonctionne pas pour le moment
+    function afficherData(data){
+        const preElement = document.getElementById('json-data');
+        preElement.innerHTML = JSON.stringify(msg);
+    }
+    </script>
+</body>
