@@ -418,4 +418,10 @@ export default class Service{
         }
         
     }
+
+    startGame(){
+        this.createPlateau(10, 10);
+        this.createBaseNavale(1);
+        this.createBaseNavale(2);
+    }
 }
