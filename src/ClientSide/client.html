@@ -1,4 +1,19 @@
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  const socket = io();
-</script>
+<body>
+    <pre id="json-data"></pre>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+    const socket = io();
+
+    socket.on('game created', (game) => {
+        const preElement = document.getElementById('json-data');
+        preElement.innerHTML = JSON.stringify(game);
+    })
+
+    // Ne fonctionne pas pour le moment
+    function afficherData(data){
+        const preElement = document.getElementById('json-data');
+        preElement.innerHTML = JSON.stringify(msg);
+    }
+    </script>
+</body>
