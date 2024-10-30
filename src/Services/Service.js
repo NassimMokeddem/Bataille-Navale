@@ -243,7 +243,18 @@ export default class Service{
         //Modification ressource
         this.getBaseNavale(idJoueur).setArgent(argent - prix);
         
-        this.getBaseNavale(idJoueur).getNaviresJ().push(this.#createNavire(type))
+        const navire = this.#createNavire(type);
+
+        this.getBaseNavale(idJoueur).getNaviresJ().push(navire);
+
+        try{
+            const coord = this.spaceBaseAvailable(idJoueur, navire.getDimension());
+
+            this.updatePlateau(coord.at(0), coord.at(1), navire)
+        }
+        catch(err ){
+            throw err
+        }
     }
 
     updatePlateau(x, y, contenu) {
