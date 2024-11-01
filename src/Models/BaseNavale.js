@@ -60,8 +60,11 @@ export default class BaseNavale{
          * TO DO
          * Reste à vérifier si le bateau appartient au bon joueur
          */
+        if(!this.naviresJ.contains(navire)){
+            throw new TypeError("resupplyNavire -> Le navire ne vous appartient pas")
+        }
         if(! (navire instanceof Navire)){
-            throw new TypeError("Bad argument navire in BaseNavale: resupplyNavire")
+            throw new TypeError("resupplyNavire -> n'est pas un navire")
         }
 
         navire.setProvision(navire.getProvisionMax())
@@ -74,8 +77,11 @@ export default class BaseNavale{
          * TO DO
          * Reste à vérifier si le bateau appartient au bon joueur
          */
+        if(!this.naviresJ.contains(navire)){
+            throw new TypeError("repareNavire -> Le navire vous appartient pas")
+        }
         if(! (navire instanceof Navire)){
-            throw new TypeError("Bad argument navire in BaseNavale: repareNavire")
+            throw new TypeError("repareNavire -> n'est pas un navire")
         }
 
         navire.setSante(navire.getSanteMax())
