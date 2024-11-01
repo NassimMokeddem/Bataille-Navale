@@ -283,6 +283,10 @@ export default class Service{
         *  TO DO
         *  Reste à ajouter si c'est une base
         */
+       if((attaquant instanceof BaseNavale) || (defenseur instanceof BaseNavale) ){
+        throw new Error("calculDegat -> attaquant est une base Navale ou defenseur est une base Navale")
+       }
+
         if(! (attaquant instanceof Navire))
             throw TypeError("Wrong argument type attaquant in Navire: calculDegat")
 
@@ -322,6 +326,11 @@ export default class Service{
         *  TO DO
         *  Reste à ajouter si c'est une base
         */
+
+        if((attaquant instanceof BaseNavale) || (defenseur instanceof BaseNavale) ){
+            throw new Error("calculDegat -> attaquant est une base Navale ou defenseur est une base Navale")
+        }
+
         if(! (attaquant instanceof Navire)){
             throw TypeError("Wrong argument type attaquant in Service: tirer")
         }

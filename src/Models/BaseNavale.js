@@ -26,7 +26,7 @@ export default class BaseNavale{
         } 
         this.dimension = [2,2];
         this.idJoueur = idJoueur;
-        this.argent = 100;
+        this.argent = 1000000;
         this.naviresJ = new Array();
     }
 
@@ -63,6 +63,7 @@ export default class BaseNavale{
         if(!this.naviresJ.contains(navire)){
             throw new TypeError("resupplyNavire -> Le navire ne vous appartient pas")
         }
+        
         if(! (navire instanceof Navire)){
             throw new TypeError("resupplyNavire -> n'est pas un navire")
         }
