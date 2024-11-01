@@ -9,12 +9,12 @@
 
     socket.on('game created', (game) => {
         const preElement = document.getElementById('json-data');
-        preElement.innerHTML = JSON.stringify(game);
+        preElement.innerHTML = JSON.stringify(game, null, 2);
     })
 
     socket.on('boatAcquired', (game) => {
         const preElement = document.getElementById('json-data');
-        preElement.innerHTML = JSON.stringify(game);
+        preElement.innerHTML = JSON.stringify(game, null, 2);
     })
 
     function buyBoat(){
@@ -24,7 +24,7 @@
     // Ne fonctionne pas pour le moment
     function afficherData(data){
         const preElement = document.getElementById('json-data');
-        preElement.innerHTML = JSON.stringify(msg);
+        preElement.innerHTML = JSON.stringify(msg, null, 2);
     }
     </script>
 </body>
