@@ -35,10 +35,10 @@ export default class Plateau {
      */
     initialiserGrille(nlong, nlarg){
         const grille = new Array();
-        for(let i=0; i < nlong; i++){
+        for(let y=0; y < nlong; y++){
             const ligne = new Array();
-            for(let j=0; j < nlarg; j++){
-                ligne.push(new Case(i, j));
+            for(let x=0; x < nlarg; x++){
+                ligne.push(new Case(x, y));
             }
 
             grille.push(ligne);
