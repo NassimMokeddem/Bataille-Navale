@@ -3,6 +3,10 @@
 
     <button onclick="buyBoat()">Try it</button>
 
+    <button onclick="createGame()">Create Game</button>
+
+    <button onclick="joinGame()">Join Game</button>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
     const socket = io();
@@ -19,6 +23,17 @@
 
     function buyBoat(){
         socket.emit('addBoat', {idJoueur: 1, type: 'Destroyer'});
+    }
+
+    /*
+    * On attend bien des chaînes de caractère pour l'identifiant de la partie
+    */
+    function createGame(){
+        socket.emit('newGame', '1234');
+    }
+
+    function joinGame(){
+        socket.emit('joinGame', '1234');
     }
 
     // Ne fonctionne pas pour le moment

@@ -17,10 +17,10 @@ export class Socket{
 		Socket.Partie[partieID].initPlayer(player, 1);
 	}
 
-	constructor(player, partieID){
+	constructor(joueur1, partieID){
 
 		if(Socket.Partie[partieID] !== undefined){
-			player.socket.emit('ERROR', new Error('PartieID déjà utilisé'));
+			joueur1.socket.emit('ERROR', new Error('PartieID déjà utilisé'));
 			// pas certains de ça
 			delete this;
 			return;
@@ -28,26 +28,32 @@ export class Socket{
 
 		this.service = new Service();
 
+		Socket.Partie[partieID] = this;
+
 		this.tour = 0;
+
+		this.partieID = partieID;
+
+
 
 		this.initPlayer(joueur1, 0);
 
-		Socket.Partie[partieID] = this;
 	}
 
 	initPlayer(player, tour){
 		
 		tour?this.joueur2=player:this.joueur1=player;
 
-		this.moveRoom(player);
+		this.#moveRoom(player);
 
-		this.socket.on('disconnect', () => {
+		player.socket.on('disconnect', () => {
 			if(this === undefined) 
 				return;
 			this.win(tour?0:1);
 		});
 
-		this.socket.on('placeNavire', (data) =>{
+
+		player.socket.on('placeNavire', (data) =>{
 			if(this === undefined || tour !== this.tour){
 				player.socket.emit('ERROR', 'c\'est pas ton tour !');
 				return;
@@ -55,7 +61,7 @@ export class Socket{
 			//TODO placer un navire
 		});
 
-		this.socket.on('navireAttaque', (data) =>{
+		player.socket.on('navireAttaque', (data) =>{
 			if(this === undefined || tour !== this.tour){
 				player.socket.emit('ERROR', 'c\'est pas ton tour !');
 				return;
@@ -63,7 +69,7 @@ export class Socket{
 			//TODO le navire attaque, data{navire: navire, x: posx, y: posy}
 		});
 
-		this.socket.on('navireDeplace', (data) =>{
+		player.socket.on('navireDeplace', (data) =>{
 			if(this === undefined || tour !== this.tour){
 				player.socket.emit('ERROR', 'c\'est pas ton tour !');
 				return;
