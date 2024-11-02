@@ -34,6 +34,8 @@ export class Socket{
 
 		this.partieID = partieID;
 
+		this.partieDebut = true;
+
 
 
 		this.initPlayer(joueur1, 0);
@@ -43,6 +45,14 @@ export class Socket{
 	initPlayer(player, tour){
 		
 		tour?this.joueur2=player:this.joueur1=player;
+
+		// Début de partie
+		if(this.partieDebut && this.joueur1 !== undefined && this.joueur2 !== undefined){
+			this.service.startGame()
+			this.joueur1.socket.emit('game created', this.service.getPlateau());
+			this.joueur2.socket.emit('game created', this.service.getPlateau());
+			this.partieDebut = false;
+		}
 
 		this.#moveRoom(player);
 
