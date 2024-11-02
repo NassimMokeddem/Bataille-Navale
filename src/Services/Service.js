@@ -283,19 +283,19 @@ export default class Service{
         *  TO DO
         *  Reste à ajouter si c'est une base
         */
-       if((attaquant instanceof BaseNavale) || (defenseur instanceof BaseNavale) ){
-        throw new Error("calculDegat -> attaquant est une base Navale ou defenseur est une base Navale")
-       }
+        if((attaquant instanceof BaseNavale) || (defenseur instanceof BaseNavale) ){
+            throw new Error("calculDegat -> attaquant est une base Navale ou defenseur est une base Navale")
+           }
 
         if(! (attaquant instanceof Navire))
             throw TypeError("Wrong argument type attaquant in Navire: calculDegat")
 
         if(! (defenseur instanceof Navire))
             throw TypeError("Wrong argument type defenseur in Navire: calculDegat")
-
+        
         const degatAppliquee = attaquant.getDegat() - defenseur.getArmure();
         if(degatAppliquee <= 0)
-            return 0
+            return 1
         return degatAppliquee
     }
 
@@ -326,7 +326,7 @@ export default class Service{
         *  TO DO
         *  Reste à ajouter si c'est une base
         */
-
+       
         if((attaquant instanceof BaseNavale) || (defenseur instanceof BaseNavale) ){
             throw new Error("calculDegat -> attaquant est une base Navale ou defenseur est une base Navale")
         }
@@ -353,12 +353,15 @@ export default class Service{
             defenseur.setSante(defenseur.getSante() - degatAppliquee)
         else defenseur.setSante(0)
     }
+/*
+    tirer(cAttaquant, cDefenseur){
 
-    tirer(attaquant, defenseur, cAttaquant, cDefenseur){
-        /*
-        *  TO DO
-        *  Reste à ajouter si c'est une base
-        */
+        if(attaquant instanceof BaseNavale)
+            throw TypeError("Wrong argument type attaquant (Base) in Plateau: tirerNavire")
+
+        if(defenseur instanceof BaseNavale)
+            throw TypeError("Wrong argument type defenseur (Base) in Plateau: tirerNavire")
+
         if(! (attaquant instanceof Navire))
             throw TypeError("Wrong argument type attaquant in Plateau: tirerNavire")
 
@@ -388,6 +391,39 @@ export default class Service{
         return defenseur
     }
 
+  */
+    tirer(xAttaquant, yAttaquant, xDefenseur, yDefenseur){
+        let attaquant = this.getPlateau().getCase(xAttaquant, yAttaquant).getContenu()
+        let defenseur = this.getPlateau().getCase(xDefenseur, yDefenseur).getContenu()
+
+        if(attaquant instanceof BaseNavale)
+            throw TypeError("Wrong argument type attaquant (Base) in Plateau: tirerNavire")
+
+        if(defenseur instanceof BaseNavale)
+            throw TypeError("Wrong argument type defenseur (Base) in Plateau: tirerNavire")
+
+        if(! (attaquant instanceof Navire))
+            throw TypeError("Wrong argument type attaquant in Plateau: tirerNavire")
+
+        if(! (defenseur instanceof Navire))
+            throw TypeError("Wrong argument type defenseur in Plateau: tirerNavire")
+
+        if(! this.verifPortee(this.getPlateau().getCase(xAttaquant, yAttaquant), this.getPlateau().getCase(xDefenseur, yDefenseur), attaquant.getPortee()))
+            throw Error("The attacker doesn\'t have enough range")
+
+        try{
+            this.appliqueDegat(attaquant, defenseur);
+        }
+        catch(err ){
+            if(err instanceof TypeError)
+                throw TypeError("Wrong argument type in Service: tirerNavire\nWent through the first control of Service: tirerNavire")
+        }
+
+        if(defenseur.estDetruit())
+            this.getPlateau().getCase(xDefenseur, yDefenseur).vider();
+
+        return defenseur
+    }
 
     /*
     * Deprecated
@@ -409,12 +445,13 @@ export default class Service{
         }
     }
 
-    repare(navire, idJoueur){
+    repare(xRepare, yRepare, idJoueur){
+        let navire = this.getPlateau().getCase(xRepare, yRepare).getContenu()
         /**
          * TO DO
          * Reste à vérifier si le bateau appartient au bon joueur
          */
-        if(!this.getBaseNavale(idJoueur).naviresJ.contains(navire)){
+        if(! (this.getBaseNavale(idJoueur).naviresJ.includes(navire))){
             throw new TypeError("resupplyNavire -> Le navire ne vous appartient pas")
         }
         if(! (navire instanceof Navire)){
@@ -428,6 +465,14 @@ export default class Service{
             console.log(err.stack)
             throw new Error("Error on Service: resupply");
         }
+        
+    }
+
+
+    updateFood(idJoueur){
+        this.getBaseNavale(idJoueur).naviresJ.forEach(element => {
+            element.nourriture -= 5;
+        });
         
     }
 
