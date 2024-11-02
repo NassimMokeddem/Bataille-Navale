@@ -1,3 +1,4 @@
+import Service from '../Services/Service.js';
 /**
  * @class
  * @property {String} instanceId - Le nom de l'instance de jeu
@@ -5,72 +6,87 @@
  * @property {IO} io - Permet la communication avec les membres de l'instance
  * */
 
-function socket(io, service){
-    io.on('connection', (socket) =>{
-        console.log(socket.id + ' connected')
-
-        service.startGame();
-        socket.emit('game created', service.getPlateau());
-
-        socket.on('addBoat', (data) => {
-            service.buyNavire(data.idJoueur, data.type)
-            socket.emit('boatAcquired', service.getPlateau());
-        })
-
-        socket.on('disconnect', () => {
-            console.log('User disconnected');
-        });
-    });
-}
-
-export default socket;
-
 export class Socket{
 
-    constructor(socket, io){
-        this.socket = socket;
-        this.io = io;
-        
-        this.moveRoom('Lobby');
+	static Partie = {};
+	static joinPartie(player, partieID){
+		if(Socket.Partie[partieID] === undefined){
+			player.socket.emit('ERROR', 'partieID inconnu');
+			return;
+		}
+		Socket.Partie[partieID].initPlayer(player, 1);
+	}
 
-        this.socket.on('newGame', (id) => {
-            //TODO création d'une nouvelle instance de jeu
-        });
-        
-        this.socket.on('joinGame', (id) =>{
-            //TODO rejoindre une instance existante
-        });
+	constructor(player, partieID){
 
-        this.socket.on('disconnect', () => {
-            //TODO le joueur se déconnecte
-        });
+		if(Socket.Partie[partieID] !== undefined){
+			player.socket.emit('ERROR', new Error('PartieID déjà utilisé'));
+			// pas certains de ça
+			delete this;
+			return;
+		}
 
-        this.socket.on('placeNavire', (navire) =>{
-            //TODO placer un navire
-        });
+		this.service = new Service();
 
-        /*
-         *  Il va falloir prendre en compte que
-         *  le plateau du joueur2 est à l'envers
-         * */
+		this.tour = 0;
 
-        this.socket.on('navireAttaque', (data) =>{
-            //TODO le navire attaque, data{navire: navire, x: posx, y: posy}
-        });
+		this.initPlayer(joueur1, 0);
 
-        this.socket.on('navireDeplace', (data) =>{
-            //TODO le navire est déplacé, data{navire: navire, action: up/down/left/right/rotateL/rotateR}
-        });
-    }
+		Socket.Partie[partieID] = this;
+	}
 
+	initPlayer(player, tour){
+		
+		tour?this.joueur2=player:this.joueur1=player;
 
-    /**
-     *  Ne pas utiliser, uniquement utiliser dans newGame et joinGame
-     */
-    #moveRoom(instance){
-        this.socket.join(instance);
-        this.socket.leave(this.instanceId);
-        this.instanceId = instance;
-    }
+		this.moveRoom(player);
+
+		this.socket.on('disconnect', () => {
+			if(this === undefined) 
+				return;
+			this.win(tour?0:1);
+		});
+
+		this.socket.on('placeNavire', (data) =>{
+			if(this === undefined || tour !== this.tour){
+				player.socket.emit('ERROR', 'c\'est pas ton tour !');
+				return;
+			}
+			//TODO placer un navire
+		});
+
+		this.socket.on('navireAttaque', (data) =>{
+			if(this === undefined || tour !== this.tour){
+				player.socket.emit('ERROR', 'c\'est pas ton tour !');
+				return;
+			}
+			//TODO le navire attaque, data{navire: navire, x: posx, y: posy}
+		});
+
+		this.socket.on('navireDeplace', (data) =>{
+			if(this === undefined || tour !== this.tour){
+				player.socket.emit('ERROR', 'c\'est pas ton tour !');
+				return;
+			}
+			//TODO le navire est déplacé, data{navire: navire, action: up/down/left/right/rotateL/rotateR}
+		});
+
+	}
+
+	win(tour){
+		this.joueur1.socket.emit(tour?'Perdu':'Gagné');
+		this.joueur2.socket.emit(tour?'Gagné':'Perdu');
+
+		// réinitialiser les sockets ? juste les socket.on ? Risque de crash si une socket envoie une commande ? 
+		// test avec this === undefined, on croise les doigts ?
+
+		delete this; // Vérifier que ça delete bien Socket.Partie[partieID]
+	}
+
+	#moveRoom(player){
+		player.socket.join(this.partieID);
+		player.socket.leave(player.partieID);
+		player.partieID = this.partieID;
+	}
 
 }

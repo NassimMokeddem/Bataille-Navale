@@ -3,7 +3,7 @@ import Service from "../Services/Service.js"
 import { Destroyer, Fregate, SousMarin } from "../Models/Navire.js";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from 'node:url';
-import socket from "./Socket.js";
+import { Socket } from "./Socket.js";
 
 const router = express.Router();
 const service = new Service();
@@ -71,7 +71,11 @@ router.put('/tirer', (req,res) => {
 router.get('/start', (req, res) => {
     res.sendFile(join(__dirname, '../ClientSide/client.html'))
     const io = req.app.get('io');
-    socket(io, service);
+		io.on('connection', (socket) =>{
+			let player = {socket: socket, partieID: null};
+			socket.on('newGame', (partieID) => new Socket(player, partieID));
+			socket.on('joinGame', (partieID) => Socket.joinPartie(player, partieID));
+		});
 })
 
 router.all('*', (req, res) => {
