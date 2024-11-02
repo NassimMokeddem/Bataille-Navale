@@ -60,7 +60,7 @@ export default class BaseNavale{
          * TO DO
          * Reste à vérifier si le bateau appartient au bon joueur
          */
-        if(!this.naviresJ.contains(navire)){
+        if(!this.naviresJ.includes(navire)){
             throw new TypeError("resupplyNavire -> Le navire ne vous appartient pas")
         }
         
@@ -78,7 +78,7 @@ export default class BaseNavale{
          * TO DO
          * Reste à vérifier si le bateau appartient au bon joueur
          */
-        if(!this.naviresJ.contains(navire)){
+        if(!this.naviresJ.includes(navire)){
             throw new TypeError("repareNavire -> Le navire vous appartient pas")
         }
         if(! (navire instanceof Navire)){
