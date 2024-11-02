@@ -409,17 +409,20 @@ export default class Service{
         }
     }
 
-    repare(navire, nbJoueur){
+    repare(navire, idJoueur){
         /**
          * TO DO
          * Reste à vérifier si le bateau appartient au bon joueur
          */
+        if(!this.getBaseNavale(idJoueur).naviresJ.contains(navire)){
+            throw new TypeError("resupplyNavire -> Le navire ne vous appartient pas")
+        }
         if(! (navire instanceof Navire)){
             throw new TypeError("Bad argument navire in BaseNavale: resupplyNavire")
         }
 
         try{
-            this.getBaseNavale(nbJoueur).repareNavire(navire);
+            this.getBaseNavale(idJoueur).repareNavire(navire);
         }
         catch(err ){
             console.log(err.stack)
