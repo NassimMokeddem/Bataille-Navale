@@ -26,6 +26,8 @@ export default class Service{
                 return new SousMarin();
             case 'Fregate':
                 return new Fregate();
+            case 'Transporteur':
+                return new Transporteur();
             default:
                 return null;
         }
@@ -241,6 +243,8 @@ export default class Service{
             case 'Fregate':
                 prix = 35;
                 break;
+            case 'Trasporteur':
+                prix = 300;
             default:
                 throw new Error("Bas argument type in Service: buyNavire");
         }
@@ -293,12 +297,9 @@ export default class Service{
     }
 
     calculDegat(attaquant, defenseur){
-        /*
-        *  TO DO
-        *  Reste à ajouter si c'est une base
-        */
+
         if((attaquant instanceof BaseNavale) || (defenseur instanceof BaseNavale) ){
-            throw new Error("calculDegat -> attaquant est une base Navale ou defenseur est une base Navale")
+            throw new Error("calculDegat (Service.js) -> attaquant est une base Navale ou defenseur est une base Navale")
            }
 
         if(! (attaquant instanceof Navire))
@@ -336,13 +337,9 @@ export default class Service{
     }
 
     appliqueDegat(attaquant, defenseur){
-        /*
-        *  TO DO
-        *  Reste à ajouter si c'est une base
-        */
        
         if((attaquant instanceof BaseNavale) || (defenseur instanceof BaseNavale) ){
-            throw new Error("calculDegat -> attaquant est une base Navale ou defenseur est une base Navale")
+            throw new Error("calculDegat (Service.js) -> attaquant est une base Navale ou defenseur est une base Navale")
         }
 
         if(! (attaquant instanceof Navire)){
@@ -461,15 +458,12 @@ export default class Service{
 
     repare(xRepare, yRepare, idJoueur){
         let navire = this.getPlateau().getCase(xRepare, yRepare).getContenu()
-        /**
-         * TO DO
-         * Reste à vérifier si le bateau appartient au bon joueur
-         */
+        
         if(! (this.getBaseNavale(idJoueur).naviresJ.includes(navire))){
-            throw new TypeError("resupplyNavire -> Le navire ne vous appartient pas")
+            throw new TypeError("resupplyNavire (Service.js) -> Le navire ne vous appartient pas")
         }
         if(! (navire instanceof Navire)){
-            throw new TypeError("Bad argument navire in BaseNavale: resupplyNavire")
+            throw new TypeError("Bad argument navire in BaseNavale: resupplyNavire (Service.js)")
         }
 
         try{
@@ -488,6 +482,49 @@ export default class Service{
             element.nourriture -= 5;
         });
         
+    }
+
+    moveNavire(xNavire, yNavire, xDeplacement, yDeplacement, idJoueur){
+        let navire = this.getPlateau().getCase(xNavire, yNavire).getContenu()
+
+        if(navire instanceof BaseNavale)
+            throw TypeError("Wrong argument type navire (Base) in Plateau: moveNavire")
+
+        if(! (navire instanceof Navire)){
+            throw new TypeError("Bad argument navire in BaseNavale: moveNavire")
+        }
+        
+        if(! (this.getBaseNavale(idJoueur).naviresJ.includes(navire))){
+            throw new TypeError("resupplyNavire -> Le navire ne vous appartient pas")
+        }
+        
+
+        for(let i = 0; i < navire.getDimension()[1] - 1; i++){
+            if((yNavire - 1) < 0 ||
+               this.getPlateau().getCase(xNavire, yNavire - 1).getContenu() === null ||
+               this.getPlateau().getCase(xNavire, yNavire - 1).getContenu() !== navire){
+               break;
+            }
+            else{
+                yNavire -= 1
+            }
+        }
+
+        if(Math.abs(xNavire - xDeplacement) + Math.abs(yNavire - yDeplacement) <= navire.pm){
+            if(this.getPlateau().enoughSpaceMove(xDeplacement, yDeplacement, navire.getDimension(), navire)){
+                for(let i = 0; i < navire.getDimension()[1]; i++){
+                    this.getPlateau().getCase(xNavire, yNavire + i).vider()
+                }
+                this.updatePlateau(xDeplacement, yDeplacement, navire)
+                navire.pm -= Math.abs(xNavire - xDeplacement) + Math.abs(yNavire - yDeplacement)
+            }
+            else{
+                throw Error("Déplacement impossible")
+            }
+        }
+        else{
+            throw Error("Pas assez de point de déplacement")
+        }
     }
 
     startGame(){
