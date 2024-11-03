@@ -1,7 +1,7 @@
 <body>
     
-    <label for="joueurNumero">Joueur Identifiant:</label>
-    <input type="number" id="joueurNumero" name="joueurNumero">
+    <label for="joueurNumeroB">Joueur Identifiant:</label>
+    <input type="number" id="joueurNumeroB" name="joueurNumeroB">
     <label for="x">X:</label>
     <input type="number" id="x" name="x">
     <label for="y">Y:</label>
@@ -17,6 +17,18 @@
     <label for="yDef">Defenseur Y:</label>
     <input type="number" id="yDef" name="yDef">
     <button onclick="shootBoat()">Shoot Boat</button><br>
+
+    <label for="xDep">Depart X:</label>
+    <input type="number" id="xDep" name="xDep">
+    <label for="yDep">Depart Y:</label>
+    <input type="number" id="yDep" name="yDep">
+    <label for="xArr">Arrivee X:</label>
+    <input type="number" id="xArr" name="xArr">
+    <label for="yArr">Arrivee Y:</label>
+    <input type="number" id="yArr" name="yArr">
+    <label for="joueurNumeroM">Joueur Identifiant:</label>
+    <input type="number" id="joueurNumeroM" name="joueurNumeroM">
+    <button onclick="moveBoat()">Move Boat</button><br>
     
     <button onclick="createGame()">Create Game</button>
     
@@ -45,12 +57,17 @@
         preElement.innerHTML = JSON.stringify(boat, null, 2);
     })
 
+    socket.on('navireArrive', (game) => {
+        const preElement = document.getElementById('json-data');
+        preElement.innerHTML = JSON.stringify(game, null, 2);
+    })
+
     socket.on('ERROR', (msg) =>{
         alert(msg);
     })
 
     function buyBoat(){
-        socket.emit('placeNavire', {idJoueur: Number(document.getElementById("joueurNumero").value), type: 'Destroyer', x: Number(document.getElementById("x").value), y: Number(document.getElementById("y").value)});
+        socket.emit('placeNavire', {idJoueur: Number(document.getElementById("joueurNumeroB").value), type: 'Destroyer', x: Number(document.getElementById("x").value), y: Number(document.getElementById("y").value)});
     }
 
     /*
@@ -66,6 +83,10 @@
 
     function shootBoat(){
         socket.emit('navireAttaque', {xAttaquant: Number(document.getElementById("xAtk").value), yAttaquant: Number(document.getElementById("yAtk").value), xDefenseur: Number(document.getElementById("xDef").value), yDefenseur: Number(document.getElementById("yDef").value)})
+    }
+
+    function moveBoat(){
+        socket.emit('navireDeplace', {xNavire: Number(document.getElementById("xDep").value), yNavire: Number(document.getElementById("yDep").value), xDeplacement: Number(document.getElementById("xArr").value), yDeplacement: Number(document.getElementById("yArr").value), idJoueur: Number(document.getElementById("joueurNumeroM").value)})
     }
 
     // Ne fonctionne pas pour le moment
