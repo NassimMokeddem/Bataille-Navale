@@ -1,11 +1,12 @@
 <body>
-    <pre id="json-data"></pre>
-
-    <button onclick="buyBoat()">Try it</button>
-
+    
+    <button onclick="buyBoat()">Buy boat</button>
+    
     <button onclick="createGame()">Create Game</button>
-
+    
     <button onclick="joinGame()">Join Game</button>
+    
+    <pre id="json-data"></pre>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -21,8 +22,12 @@
         preElement.innerHTML = JSON.stringify(game, null, 2);
     })
 
+    socket.on('ERROR', (msg) =>{
+        alert(msg);
+    })
+
     function buyBoat(){
-        socket.emit('addBoat', {idJoueur: 1, type: 'Destroyer'});
+        socket.emit('placeNavire', {idJoueur: 1, type: 'Destroyer', x: 5, y: 5});
     }
 
     /*
