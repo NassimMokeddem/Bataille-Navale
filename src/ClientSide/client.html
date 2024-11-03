@@ -1,6 +1,12 @@
 <body>
     
-    <button onclick="buyBoat()">Buy boat</button>
+    <label for="joueurNumero">Joueur Identifiant:</label>
+    <input type="number" id="joueurNumero" name="joueurNumero">
+    <label for="x">X:</label>
+    <input type="number" id="x" name="x">
+    <label for="y">Y:</label>
+    <input type="number" id="y" name="y">
+    <button onclick="buyBoat()">Buy boat</button><br>
     
     <button onclick="createGame()">Create Game</button>
     
@@ -27,7 +33,8 @@
     })
 
     function buyBoat(){
-        socket.emit('placeNavire', {idJoueur: 1, type: 'Destroyer', x: 5, y: 5});
+        let joueur = document.getElementById("joueurNumero").value;
+        socket.emit('placeNavire', {idJoueur: Number(document.getElementById("joueurNumero").value), type: 'Destroyer', x: Number(document.getElementById("x").value), y: Number(document.getElementById("y").value)});
     }
 
     /*
