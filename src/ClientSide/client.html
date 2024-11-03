@@ -30,9 +30,13 @@
     <input type="number" id="joueurNumeroM" name="joueurNumeroM">
     <button onclick="moveBoat()">Move Boat</button><br>
     
+    <button onclick="endTurn()">End Turn</button>
+
     <button onclick="createGame()">Create Game</button>
     
     <button onclick="joinGame()">Join Game</button>
+
+    <pre id="turn-state"></pre>
 
     <pre id="boat-state"></pre>
     
@@ -62,6 +66,16 @@
         preElement.innerHTML = JSON.stringify(game, null, 2);
     })
 
+    socket.on('Tour', (msg) => {
+        const preElement = document.getElementById('turn-state');
+        preElement.innerHTML = JSON.stringify(msg, null, 2);
+    })
+
+    socket.on('TourD', (game) => {
+        const preElement = document.getElementById('json-data');
+        preElement.innerHTML = JSON.stringify(game, null, 2);
+    })
+
     socket.on('ERROR', (msg) =>{
         alert(msg);
     })
@@ -87,6 +101,10 @@
 
     function moveBoat(){
         socket.emit('navireDeplace', {xNavire: Number(document.getElementById("xDep").value), yNavire: Number(document.getElementById("yDep").value), xDeplacement: Number(document.getElementById("xArr").value), yDeplacement: Number(document.getElementById("yArr").value), idJoueur: Number(document.getElementById("joueurNumeroM").value)})
+    }
+
+    function endTurn(){
+        socket.emit('finDeTour');
     }
 
     // Ne fonctionne pas pour le moment

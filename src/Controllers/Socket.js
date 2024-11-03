@@ -131,8 +131,13 @@ export class Socket{
 			}
 			this.tour = (this.tour + 1) % 2;
 			
+			this.service.updateFood(tour?2:1);
+
 			this.joueur1.socket.emit('Tour', 'Tour du Joueur ' + (this.tour?'2':'1'));
 			this.joueur2.socket.emit('Tour', 'Tour du Joueur ' + (this.tour?'2':'1'));
+
+			this.joueur1.socket.emit('TourD', this.service.getPlateau());
+			this.joueur2.socket.emit('TourD', this.service.getPlateau());
 		});
 
 	}
