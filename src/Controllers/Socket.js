@@ -76,7 +76,7 @@ export class Socket{
 			}
 
 			try{
-				if(this.service.buyNavire(data.idJoueur, data.type, data.x, data.y) === 'Pas assez d\'argent')
+				if(this.service.buyNavire(tour?2:1, data.type, data.x, data.y) === 'Pas assez d\'argent')
 					throw new Error('Not enough money');
 				player.socket.emit('boatAcquired', this.service.getPlateau());
 				tour?this.joueur1.socket.emit('boatAcquired', this.service.getPlateau()):this.joueur2.socket.emit('boatAcquired', this.service.getPlateau())
@@ -95,7 +95,7 @@ export class Socket{
 			}
 
 			try{
-				let def = this.service.tirer(data.xAttaquant, data.yAttaquant, data.xDefenseur, data.yDefenseur);
+				let def = this.service.tirer(data.xAttaquant, data.yAttaquant, data.xDefenseur, data.yDefenseur, tour?2:1);
 				player.socket.emit('navireEndommage', def);
 				tour?this.joueur1.socket.emit('navireEndommage', def):this.joueur2.socket.emit('navireEndommage', def)
 
@@ -113,7 +113,7 @@ export class Socket{
 			}
 
 			try{
-				this.service.moveNavire(data.xNavire, data.yNavire, data.xDeplacement, data.yDeplacement, data.idJoueur);
+				this.service.moveNavire(data.xNavire, data.yNavire, data.xDeplacement, data.yDeplacement, tour?2:1);
 				player.socket.emit('navireArrive', this.service.getPlateau());
 				tour?this.joueur1.socket.emit('navireArrive', this.service.getPlateau()):this.joueur2.socket.emit('navireArrive', this.service.getPlateau())
 

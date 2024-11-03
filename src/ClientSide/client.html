@@ -1,7 +1,7 @@
 <body>
     
-    <label for="joueurNumeroB">Joueur Identifiant:</label>
-    <input type="number" id="joueurNumeroB" name="joueurNumeroB">
+    <!--<label for="joueurNumeroB">Joueur Identifiant:</label>
+    <input type="number" id="joueurNumeroB" name="joueurNumeroB">-->
     <label for="x">X:</label>
     <input type="number" id="x" name="x">
     <label for="y">Y:</label>
@@ -16,6 +16,8 @@
     <input type="number" id="xDef" name="xDef">
     <label for="yDef">Defenseur Y:</label>
     <input type="number" id="yDef" name="yDef">
+    <!--<label for="joueurNumeroS">Joueur Identifiant:</label>
+    <input type="number" id="joueurNumeroS" name="joueurNumeroS">-->
     <button onclick="shootBoat()">Shoot Boat</button><br>
 
     <label for="xDep">Depart X:</label>
@@ -26,12 +28,14 @@
     <input type="number" id="xArr" name="xArr">
     <label for="yArr">Arrivee Y:</label>
     <input type="number" id="yArr" name="yArr">
-    <label for="joueurNumeroM">Joueur Identifiant:</label>
-    <input type="number" id="joueurNumeroM" name="joueurNumeroM">
+    <!--<label for="joueurNumeroM">Joueur Identifiant:</label>
+    <input type="number" id="joueurNumeroM" name="joueurNumeroM">-->
     <button onclick="moveBoat()">Move Boat</button><br>
     
     <button onclick="endTurn()">End Turn</button>
 
+    <label for="roomID">Room ID:</label>
+    <input type="number" id="roomID" name="roomID">
     <button onclick="createGame()">Create Game</button>
     
     <button onclick="joinGame()">Join Game</button>
@@ -81,18 +85,18 @@
     })
 
     function buyBoat(){
-        socket.emit('placeNavire', {idJoueur: Number(document.getElementById("joueurNumeroB").value), type: 'Destroyer', x: Number(document.getElementById("x").value), y: Number(document.getElementById("y").value)});
+        socket.emit('placeNavire', {type: 'Destroyer', x: Number(document.getElementById("x").value), y: Number(document.getElementById("y").value)});
     }
 
     /*
     * On attend bien des chaînes de caractère pour l'identifiant de la partie
     */
     function createGame(){
-        socket.emit('newGame', String(document.getElementById("joueurNumeroB").value));
+        socket.emit('newGame', String(document.getElementById("roomID").value));
     }
 
     function joinGame(){
-        socket.emit('joinGame', String(document.getElementById("joueurNumeroB").value));
+        socket.emit('joinGame', String(document.getElementById("roomID").value));
     }
 
     function shootBoat(){
@@ -100,7 +104,7 @@
     }
 
     function moveBoat(){
-        socket.emit('navireDeplace', {xNavire: Number(document.getElementById("xDep").value), yNavire: Number(document.getElementById("yDep").value), xDeplacement: Number(document.getElementById("xArr").value), yDeplacement: Number(document.getElementById("yArr").value), idJoueur: Number(document.getElementById("joueurNumeroM").value)})
+        socket.emit('navireDeplace', {xNavire: Number(document.getElementById("xDep").value), yNavire: Number(document.getElementById("yDep").value), xDeplacement: Number(document.getElementById("xArr").value), yDeplacement: Number(document.getElementById("yArr").value)})
     }
 
     function endTurn(){
