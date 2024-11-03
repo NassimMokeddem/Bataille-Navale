@@ -100,6 +100,34 @@ export default class Plateau {
         return true
     }
 
+    enoughSpaceMove(x, y, dimension, navire){
+        if(! Array.isArray(dimension)){
+            throw new TypeError("Bad type of dimension in Plateau: enoughSpace")
+        }
+
+        // Vérification des coordonnées
+        if(x+dimension.at(0) > this.nlarg || 
+           y+dimension.at(1) > this.nlong ||
+           x < 0 ||
+           y < 0
+        ){
+            throw new Error("Invalid coordinates for this object in Plateau: enoughSpace")
+        }
+
+        for(let i=0; i<dimension.at(0); i++){
+            for(let j=0; j<dimension.at(1); j++){
+
+                // Si une seule case est déjà rempli alors pas assez d'espace
+                if((! (this.getCase(x+i, y+j).estVide())) && this.getCase(x+i, y+j).getContenu() !== navire){
+                    return false
+                }
+            }
+        }
+
+        // Si toute les cases sont libres alors on peut insérez l'objet
+        return true
+    }
+
     /*
     setCaseContentPlacerNavire(x, y, contenu) {
         if (x >= 0 && x < this.nlong && y >= 0 && y < this.nlarg) {
