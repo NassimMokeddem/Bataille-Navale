@@ -78,6 +78,17 @@ export default class Service{
         }
     }
 
+    inTerritory(idJoueur, x, y){
+
+        if(idJoueur == 1){
+            return (x >= 0 && x < this.getPlateau().nlarg && y >= 0 && y < this.getPlateau().nlong - x)
+        }
+
+        if(idJoueur == 2){
+            return (x >= 0 && x < this.getPlateau().nlarg && y >= this.getPlateau().nlong - x && y < this.getPlateau().nlong)
+        }
+    }
+
     /**
      * Fait à l'arrache pas utilisable dans des cas plus généraux
      * 
@@ -216,7 +227,7 @@ export default class Service{
         throw new Error("No space around BaseNavale in Service: spaceBaseAvailable");
     }
 
-    buyNavire(idJoueur, type){
+    buyNavire(idJoueur, type, x, y){
         var prix;
 
         // Evaluation du prix
@@ -248,9 +259,12 @@ export default class Service{
         this.getBaseNavale(idJoueur).getNaviresJ().push(navire);
 
         try{
-            const coord = this.spaceBaseAvailable(idJoueur, navire.getDimension());
+            if (!this.inTerritory(idJoueur, x ,y))
+                throw new Error("You can't place a boat that you bought outside of your territory")
+            if(!this.getPlateau().enoughSpace(x, y, navire.getDimension()))
+                throw new Error("You can't place a boat here. Not enough space")
 
-            this.updatePlateau(coord.at(0), coord.at(1), navire)
+            this.updatePlateau(x, y, navire)
         }
         catch(err ){
             throw err
@@ -477,7 +491,7 @@ export default class Service{
     }
 
     startGame(){
-        this.createPlateau(10, 10);
+        this.createPlateau(15, 15);
         this.createBaseNavale(1);
         this.createBaseNavale(2);
     }
