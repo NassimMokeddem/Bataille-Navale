@@ -68,7 +68,41 @@ export class Socket{
 				player.socket.emit('ERROR', 'c\'est pas ton tour !');
 				return;
 			}
-			//TODO placer un navire
+
+			try{
+				if(this.service.buyNavire(data.idJoueur, data.type, data.x, data.y) == 'Pas assez d\'argent')
+					throw new Error('Not enough money');
+				player.socket.emit('boatAcquired', this.service.getPlateau());
+				tour?this.joueur1.socket.emit('boatAcquired', this.service.getPlateau()):this.joueur2.socket.emit('boatAcquired', this.service.getPlateau());
+
+				console.log('Boat purchased')
+			}
+			catch(err ){
+				if(err.message == 'Bas argument type in Service: buyNavire'){
+					player.socket.emit('ERROR', 'You passed a bad boat type');
+					return
+				}
+
+				if(err.message == 'You can\'t place a boat that you bought outside of your territory'){
+					player.socket.emit('ERROR', err.message);
+					return
+				}
+
+				if(err.message == 'You can\'t place a boat here. Not enough space'){
+					player.socket.emit('ERROR', err.message);
+					return
+				}
+
+				if(err.message == 'Not enough money'){
+					player.socket.emit('ERROR', err.message);
+					return
+				}
+
+				else{
+					player.socket.emit('ERROR', 'Unspecified error')
+					console.log(err.message)
+				}
+			}
 		});
 
 		player.socket.on('navireAttaque', (data) =>{
