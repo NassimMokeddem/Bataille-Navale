@@ -212,7 +212,16 @@ export class Socket{
 				return;
 			}
 			this.tour = (this.tour + 1) % 2;
-			
+			if(this.service.verifierFinDePartie(1)){
+				this.joueur1.socket.emit('Fin De partie','tu as perdu');
+				this.joueur2.socket.emit('Fin De partie','tu as gagne');
+				
+			}
+			if(this.service.verifierFinDePartie(2)){
+				this.joueur2.socket.emit('Fin De partie','tu as perdu');
+				this.joueur1.socket.emit('Fin De partie','tu as gagne');
+				
+			}
 			this.service.updateFood(tour?2:1);
 
 			this.joueur1.socket.emit('Tour', 'Tour du Joueur ' + (this.tour?'2':'1'));
