@@ -162,7 +162,44 @@ export class Socket{
 				player.socket.emit('ERROR', 'c\'est pas ton tour !');
 				return;
 			}
-			//TODO le navire est déplacé, data{navire: navire, action: up/down/left/right/rotateL/rotateR}
+
+			try{
+				this.service.moveNavire(data.xNavire, data.yNavire, data.xDeplacement, data.yDeplacement, data.idJoueur);
+				player.socket.emit('navireArrive', this.service.getPlateau());
+
+				console.log('Boat at ', data.xNavire, data.yNavire, ' moved to ', data.xDeplacement, data.yDeplacement, ' in room ', this.partieID, ' from player ', data.idJoueur);
+			}
+			catch(err ){
+				if(err.message == 'Wrong argument type navire (Base) in Plateau: moveNavire'){
+					player.socket.emit('ERROR', 'You can\'t move a base');
+					return
+				}
+
+				if(err.message == 'Bad argument navire in BaseNavale: moveNavire'){
+					player.socket.emit('ERROR', 'You\'re trying to move something unidentified');
+					return
+				}
+
+				if(err.message == 'resupplyNavire -> Le navire ne vous appartient pas'){
+					player.socket.emit('ERROR', 'You\'re can only move your own boats');
+					return
+				}
+
+				if(err.message == 'Déplacement impossible'){
+					player.socket.emit('ERROR', 'You can\'t place your boat here');
+					return
+				}
+
+				if(err.message == 'Pas assez de point de déplacement'){
+					player.socket.emit('ERROR', err.message);
+					return
+				}
+
+				else{
+					player.socket.emit('ERROR', 'Unspecified error')
+					console.log(err.message)
+				}
+			}
 		});
 
 		player.socket.on('finDeTour', () => {
