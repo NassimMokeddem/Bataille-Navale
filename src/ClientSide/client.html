@@ -74,11 +74,11 @@
     * On attend bien des chaînes de caractère pour l'identifiant de la partie
     */
     function createGame(){
-        socket.emit('newGame', '1234');
+        socket.emit('newGame', String(document.getElementById("joueurNumeroB").value));
     }
 
     function joinGame(){
-        socket.emit('joinGame', '1234');
+        socket.emit('joinGame', String(document.getElementById("joueurNumeroB").value));
     }
 
     function shootBoat(){

@@ -13,6 +13,9 @@ export class Socket{
 		if(Socket.Partie[partieID] === undefined){
 			player.socket.emit('ERROR', 'partieID inconnu');
 			return;
+		}else if(Socket.Partie[partieID].joueur2 !== undefined){
+			player.socket.emit('ERROR', 'partie pleine');
+			return;
 		}
 		console.log('Player joining room ', partieID);
 
