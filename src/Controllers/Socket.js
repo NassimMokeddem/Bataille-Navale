@@ -117,7 +117,44 @@ export class Socket{
 				player.socket.emit('ERROR', 'c\'est pas ton tour !');
 				return;
 			}
-			//TODO le navire attaque, data{navire: navire, x: posx, y: posy}
+
+			try{
+				let def = this.service.tirer(data.xAttaquant, data.yAttaquant, data.xDefenseur, data.yDefenseur);
+				player.socket.emit('navireEndommage', def);
+
+				console.log('Boat at ', data.xAttaquant, data.yAttaquant, ' shoot on boat ', data.xDefenseur, data.yDefenseur, ' in room ', this.partieID, ' from player ', data.idJoueur);
+			}
+			catch(err ){
+				if(err.message == 'Wrong argument type attaquant (Base) in Plateau: tirerNavire'){
+					player.socket.emit('ERROR', 'You can\'t fire with your base');
+					return
+				}
+
+				if(err.message == 'Wrong argument type defenseur (Base) in Plateau: tirerNavire'){
+					player.socket.emit('ERROR', 'You can\'t fire on a base');
+					return
+				}
+
+				if(err.message == 'Wrong argument type attaquant in Plateau: tirerNavire'){
+					player.socket.emit('ERROR', 'You\'re firing with something uninentified');
+					return
+				}
+
+				if(err.message == 'Wrong argument type defenseur in Plateau: tirerNavire'){
+					player.socket.emit('ERROR', 'You\'re firing on something unidentified');
+					return
+				}
+
+				if(err.message == 'The attacker doesn\'t have enough range'){
+					player.socket.emit('ERROR', err.message);
+					return
+				}
+
+				else{
+					player.socket.emit('ERROR', 'Unspecified error')
+					console.log(err.message)
+				}
+			}
 		});
 
 		player.socket.on('navireDeplace', (data) =>{
