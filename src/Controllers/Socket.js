@@ -84,7 +84,31 @@ export class Socket{
 				console.log('Boat purchased in room ', this.partieID, ' from player ', data.idJoueur);
 			}
 			catch(err ){
-				player.socket.emit('ERROR', err.message);
+				if(err.message == 'Bas argument type in Service: buyNavire'){
+					player.socket.emit('ERROR', 'You passed a bad boat type');
+					return
+				}
+
+				if(err.message == 'You can\'t place a boat that you bought outside of your territory'){
+					player.socket.emit('ERROR', err.message);
+					return
+				}
+
+				if(err.message == 'You can\'t place a boat here. Not enough space'){
+					player.socket.emit('ERROR', err.message);
+					return
+				}
+
+				if(err.message == 'Not enough money'){
+					player.socket.emit('ERROR', err.message);
+					return
+				}
+
+				else{
+					player.socket.emit('ERROR', 'Unspecified error')
+					console.log(err.message)
+				}
+
 			}
 		});
 
@@ -102,7 +126,36 @@ export class Socket{
 				console.log('Boat at ', data.xAttaquant, data.yAttaquant, ' shoot on boat ', data.xDefenseur, data.yDefenseur, ' in room ', this.partieID, ' from player ', tour?2:1);
 			}
 			catch(err ){
-				player.socket.emit('ERROR', err.message);
+				if(err.message == 'Wrong argument type attaquant (Base) in Plateau: tirerNavire'){
+					player.socket.emit('ERROR', 'You can\'t fire with your base');
+					return
+				}
+
+				if(err.message == 'Wrong argument type defenseur (Base) in Plateau: tirerNavire'){
+					player.socket.emit('ERROR', 'You can\'t fire on a base');
+					return
+				}
+
+				if(err.message == 'Wrong argument type attaquant in Plateau: tirerNavire'){
+					player.socket.emit('ERROR', 'You\'re firing with something uninentified');
+					return
+				}
+
+				if(err.message == 'Wrong argument type defenseur in Plateau: tirerNavire'){
+					player.socket.emit('ERROR', 'You\'re firing on something unidentified');
+					return
+				}
+
+				if(err.message == 'The attacker doesn\'t have enough range'){
+					player.socket.emit('ERROR', err.message);
+					return
+				}
+
+				else{
+					player.socket.emit('ERROR', 'Unspecified error')
+					console.log(err.message)
+				}
+
 			}
 		});
 
@@ -120,7 +173,36 @@ export class Socket{
 				console.log('Boat at ', data.xNavire, data.yNavire, ' moved to ', data.xDeplacement, data.yDeplacement, ' in room ', this.partieID, ' from player ', tour?2:1);
 			}
 			catch(err ){
-				player.socket.emit('ERROR', err.message);
+				if(err.message == 'Wrong argument type navire (Base) in Plateau: moveNavire'){
+					player.socket.emit('ERROR', 'You can\'t move a base');
+					return
+				}
+
+				if(err.message == 'Bad argument navire in BaseNavale: moveNavire'){
+					player.socket.emit('ERROR', 'You\'re trying to move something unidentified');
+					return
+				}
+
+				if(err.message == 'resupplyNavire -> Le navire ne vous appartient pas'){
+					player.socket.emit('ERROR', 'You\'re can only move your own boats');
+					return
+				}
+
+				if(err.message == 'Déplacement impossible'){
+					player.socket.emit('ERROR', 'You can\'t place your boat here');
+					return
+				}
+
+				if(err.message == 'Pas assez de point de déplacement'){
+					player.socket.emit('ERROR', err.message);
+					return
+				}
+
+				else{
+					player.socket.emit('ERROR', 'Unspecified error')
+					console.log(err.message)
+				}
+
 			}
 		});
 
