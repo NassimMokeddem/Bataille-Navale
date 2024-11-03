@@ -403,10 +403,13 @@ export default class Service{
     }
 
   */
-    tirer(xAttaquant, yAttaquant, xDefenseur, yDefenseur){
+    tirer(xAttaquant, yAttaquant, xDefenseur, yDefenseur, idJoueur){
         let attaquant = this.getPlateau().getCase(xAttaquant, yAttaquant).getContenu()
         let defenseur = this.getPlateau().getCase(xDefenseur, yDefenseur).getContenu()
 
+        if(! (this.getBaseNavale(idJoueur).naviresJ.includes(attaquant))){
+            throw new TypeError("resupplyNavire (Service.js) -> Le navire ne vous appartient pas")
+        }
         if(attaquant instanceof BaseNavale)
             throw TypeError("Wrong argument type attaquant (Base) in Plateau: tirerNavire")
 
@@ -431,6 +434,7 @@ export default class Service{
         }
 
         if(defenseur.estDetruit())
+            delete this.getBaseNavale(idJoueur).naviresJ[defenseur];
             this.getPlateau().getCase(xDefenseur, yDefenseur).vider();
 
         return defenseur
