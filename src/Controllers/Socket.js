@@ -73,7 +73,7 @@ export class Socket{
 			}
 
 			try{
-				if(this.service.buyNavire(data.idJoueur, data.type, data.x, data.y) == 'Pas assez d\'argent')
+				if(this.service.buyNavire(data.idJoueur, data.type, data.x, data.y) === 'Pas assez d\'argent')
 					throw new Error('Not enough money');
 				player.socket.emit('boatAcquired', this.service.getPlateau());
 				tour?this.joueur1.socket.emit('boatAcquired', this.service.getPlateau()):this.joueur2.socket.emit('boatAcquired', this.service.getPlateau())
@@ -81,30 +81,7 @@ export class Socket{
 				console.log('Boat purchased in room ', this.partieID, ' from player ', data.idJoueur);
 			}
 			catch(err ){
-				if(err.message == 'Bas argument type in Service: buyNavire'){
-					player.socket.emit('ERROR', 'You passed a bad boat type');
-					return
-				}
-
-				if(err.message == 'You can\'t place a boat that you bought outside of your territory'){
-					player.socket.emit('ERROR', err.message);
-					return
-				}
-
-				if(err.message == 'You can\'t place a boat here. Not enough space'){
-					player.socket.emit('ERROR', err.message);
-					return
-				}
-
-				if(err.message == 'Not enough money'){
-					player.socket.emit('ERROR', err.message);
-					return
-				}
-
-				else{
-					player.socket.emit('ERROR', 'Unspecified error')
-					console.log(err.message)
-				}
+				player.socket.emit('ERROR', err.message);
 			}
 		});
 
@@ -122,35 +99,7 @@ export class Socket{
 				console.log('Boat at ', data.xAttaquant, data.yAttaquant, ' shoot on boat ', data.xDefenseur, data.yDefenseur, ' in room ', this.partieID, ' from player ', tour?2:1);
 			}
 			catch(err ){
-				if(err.message == 'Wrong argument type attaquant (Base) in Plateau: tirerNavire'){
-					player.socket.emit('ERROR', 'You can\'t fire with your base');
-					return
-				}
-
-				if(err.message == 'Wrong argument type defenseur (Base) in Plateau: tirerNavire'){
-					player.socket.emit('ERROR', 'You can\'t fire on a base');
-					return
-				}
-
-				if(err.message == 'Wrong argument type attaquant in Plateau: tirerNavire'){
-					player.socket.emit('ERROR', 'You\'re firing with something uninentified');
-					return
-				}
-
-				if(err.message == 'Wrong argument type defenseur in Plateau: tirerNavire'){
-					player.socket.emit('ERROR', 'You\'re firing on something unidentified');
-					return
-				}
-
-				if(err.message == 'The attacker doesn\'t have enough range'){
-					player.socket.emit('ERROR', err.message);
-					return
-				}
-
-				else{
-					player.socket.emit('ERROR', 'Unspecified error')
-					console.log(err.message)
-				}
+				player.socket.emit('ERROR', err.message);
 			}
 		});
 
