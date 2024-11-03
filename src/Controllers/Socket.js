@@ -14,6 +14,8 @@ export class Socket{
 			player.socket.emit('ERROR', 'partieID inconnu');
 			return;
 		}
+		console.log('Player joining room ', partieID);
+
 		Socket.Partie[partieID].initPlayer(player, 1);
 	}
 
@@ -37,6 +39,7 @@ export class Socket{
 		this.partieDebut = true;
 
 
+		console.log('Creating room ', partieID);
 
 		this.initPlayer(joueur1, 0);
 
@@ -79,7 +82,7 @@ export class Socket{
 				player.socket.emit('boatAcquired', this.service.getPlateau());
 				this.#sendOtherPlayer(tour);
 
-				console.log('Boat purchased')
+				console.log('Boat purchased in room ', this.partieID, ' from player ', data.idJoueur);
 			}
 			catch(err ){
 				if(err.message == 'Bas argument type in Service: buyNavire'){
