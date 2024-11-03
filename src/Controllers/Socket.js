@@ -165,6 +165,17 @@ export class Socket{
 			//TODO le navire est déplacé, data{navire: navire, action: up/down/left/right/rotateL/rotateR}
 		});
 
+		player.socket.on('finDeTour', () => {
+			if(this === undefined || tour !== this.tour){
+				player.socket.emit('ERROR', 'c\'est pas ton tour !');
+				return;
+			}
+			this.tour = (this.tour + 1) % 2;
+			
+			this.joueur1.socket.emit('Tour', 'Tour du Joueur ' + (this.tour?'2':'1'));
+			this.joueur2.socket.emit('Tour', 'Tour du Joueur ' + (this.tour?'2':'1'));
+		});
+
 	}
 
 	win(tour){
