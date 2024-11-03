@@ -36,7 +36,8 @@ export class Navire {
         this.nourriture = nourriture;
         this.maxEquipage = maxEquipage;
         this.maxNourriture = maxNourriture;
-        this.dimension = [dimension[0], dimension[1]]
+        this.dimension = [dimension[0], dimension[1]];
+        this.inutilisable = false;
     }
 
     /**
@@ -93,6 +94,35 @@ export class Navire {
      */
     setSante(sante){ this.sante = sante }
     
+
+    /**
+     * Checks if the ship is unusable (either destroyed or with insufficient crew).
+     * @returns {boolean} True if the ship is unusable, otherwise false.
+     */
+    verifierInutilisable() {
+        if (this.sante <= 0 || this.equipage <= 0) {
+            this.inutilisable = true;
+        }
+        return this.inutilisable;
+    }
+
+    /**
+     * Reduces the number of crew members if food supplies are depleted.
+     * This method can be called each turn.
+     */
+    perdreEquipage() {
+        if (this.nourriture <= 0) {
+            this.equipage = Math.max(0, this.equipage - 1);
+        }
+    }
+
+    /**
+     * @returns {boolean} Indicates if the ship is unusable due to health or lack of crew.
+     */
+    estInutilisable() {
+        return this.verifierInutilisable();
+    }
+
     /**
      * Replenishes the food supplies up to the maximum capacity
      * @param {Int} quantite - The amount of food to add

@@ -26,6 +26,8 @@ export default class Service{
                 return new SousMarin();
             case 'Fregate':
                 return new Fregate();
+            case 'Transporteur':
+                return new Transporteur();
             default:
                 return null;
         }
@@ -75,6 +77,17 @@ export default class Service{
         }
         else{
             throw new Error("Bad argument nbJoueur in Service: getBaseNavale");
+        }
+    }
+
+    inTerritory(idJoueur, x, y){
+
+        if(idJoueur == 1){
+            return (x >= 0 && x < this.getPlateau().nlarg && y >= 0 && y < this.getPlateau().nlong - x)
+        }
+
+        if(idJoueur == 2){
+            return (x >= 0 && x < this.getPlateau().nlarg && y >= this.getPlateau().nlong - x && y < this.getPlateau().nlong)
         }
     }
 
@@ -216,7 +229,7 @@ export default class Service{
         throw new Error("No space around BaseNavale in Service: spaceBaseAvailable");
     }
 
-    buyNavire(idJoueur, type){
+    buyNavire(idJoueur, type, x, y){
         var prix;
 
         // Evaluation du prix
@@ -230,6 +243,8 @@ export default class Service{
             case 'Fregate':
                 prix = 35;
                 break;
+            case 'Trasporteur':
+                prix = 300;
             default:
                 throw new Error("Bas argument type in Service: buyNavire");
         }
@@ -248,9 +263,12 @@ export default class Service{
         this.getBaseNavale(idJoueur).getNaviresJ().push(navire);
 
         try{
-            const coord = this.spaceBaseAvailable(idJoueur, navire.getDimension());
+            if (!this.inTerritory(idJoueur, x ,y))
+                throw new Error("You can't place a boat that you bought outside of your territory")
+            if(!this.getPlateau().enoughSpace(x, y, navire.getDimension()))
+                throw new Error("You can't place a boat here. Not enough space")
 
-            this.updatePlateau(coord.at(0), coord.at(1), navire)
+            this.updatePlateau(x, y, navire)
         }
         catch(err ){
             throw err
@@ -279,19 +297,20 @@ export default class Service{
     }
 
     calculDegat(attaquant, defenseur){
-        /*
-        *  TO DO
-        *  Reste à ajouter si c'est une base
-        */
+
+        if((attaquant instanceof BaseNavale) || (defenseur instanceof BaseNavale) ){
+            throw new Error("calculDegat (Service.js) -> attaquant est une base Navale ou defenseur est une base Navale")
+           }
+
         if(! (attaquant instanceof Navire))
             throw TypeError("Wrong argument type attaquant in Navire: calculDegat")
 
         if(! (defenseur instanceof Navire))
             throw TypeError("Wrong argument type defenseur in Navire: calculDegat")
-
+        
         const degatAppliquee = attaquant.getDegat() - defenseur.getArmure();
         if(degatAppliquee <= 0)
-            return 0
+            return 1
         return degatAppliquee
     }
 
@@ -318,10 +337,11 @@ export default class Service{
     }
 
     appliqueDegat(attaquant, defenseur){
-        /*
-        *  TO DO
-        *  Reste à ajouter si c'est une base
-        */
+       
+        if((attaquant instanceof BaseNavale) || (defenseur instanceof BaseNavale) ){
+            throw new Error("calculDegat (Service.js) -> attaquant est une base Navale ou defenseur est une base Navale")
+        }
+
         if(! (attaquant instanceof Navire)){
             throw TypeError("Wrong argument type attaquant in Service: tirer")
         }
@@ -344,12 +364,15 @@ export default class Service{
             defenseur.setSante(defenseur.getSante() - degatAppliquee)
         else defenseur.setSante(0)
     }
+/*
+    tirer(cAttaquant, cDefenseur){
 
-    tirer(attaquant, defenseur, cAttaquant, cDefenseur){
-        /*
-        *  TO DO
-        *  Reste à ajouter si c'est une base
-        */
+        if(attaquant instanceof BaseNavale)
+            throw TypeError("Wrong argument type attaquant (Base) in Plateau: tirerNavire")
+
+        if(defenseur instanceof BaseNavale)
+            throw TypeError("Wrong argument type defenseur (Base) in Plateau: tirerNavire")
+
         if(! (attaquant instanceof Navire))
             throw TypeError("Wrong argument type attaquant in Plateau: tirerNavire")
 
@@ -379,6 +402,43 @@ export default class Service{
         return defenseur
     }
 
+  */
+    tirer(xAttaquant, yAttaquant, xDefenseur, yDefenseur, idJoueur){
+        let attaquant = this.getPlateau().getCase(xAttaquant, yAttaquant).getContenu()
+        let defenseur = this.getPlateau().getCase(xDefenseur, yDefenseur).getContenu()
+
+        if(! (this.getBaseNavale(idJoueur).naviresJ.includes(attaquant))){
+            throw new TypeError("resupplyNavire (Service.js) -> Le navire ne vous appartient pas")
+        }
+        if(attaquant instanceof BaseNavale)
+            throw TypeError("Wrong argument type attaquant (Base) in Plateau: tirerNavire")
+
+        if(defenseur instanceof BaseNavale)
+            throw TypeError("Wrong argument type defenseur (Base) in Plateau: tirerNavire")
+
+        if(! (attaquant instanceof Navire))
+            throw TypeError("Wrong argument type attaquant in Plateau: tirerNavire")
+
+        if(! (defenseur instanceof Navire))
+            throw TypeError("Wrong argument type defenseur in Plateau: tirerNavire")
+
+        if(! this.verifPortee(this.getPlateau().getCase(xAttaquant, yAttaquant), this.getPlateau().getCase(xDefenseur, yDefenseur), attaquant.getPortee()))
+            throw Error("The attacker doesn\'t have enough range")
+
+        try{
+            this.appliqueDegat(attaquant, defenseur);
+        }
+        catch(err ){
+            if(err instanceof TypeError)
+                throw TypeError("Wrong argument type in Service: tirerNavire\nWent through the first control of Service: tirerNavire")
+        }
+
+        if(defenseur.estDetruit())
+            delete this.getBaseNavale(idJoueur).naviresJ[defenseur];
+            this.getPlateau().getCase(xDefenseur, yDefenseur).vider();
+
+        return defenseur
+    }
 
     /*
     * Deprecated
@@ -400,17 +460,18 @@ export default class Service{
         }
     }
 
-    repare(navire, nbJoueur){
-        /**
-         * TO DO
-         * Reste à vérifier si le bateau appartient au bon joueur
-         */
+    repare(xRepare, yRepare, idJoueur){
+        let navire = this.getPlateau().getCase(xRepare, yRepare).getContenu()
+        
+        if(! (this.getBaseNavale(idJoueur).naviresJ.includes(navire))){
+            throw new TypeError("resupplyNavire (Service.js) -> Le navire ne vous appartient pas")
+        }
         if(! (navire instanceof Navire)){
-            throw new TypeError("Bad argument navire in BaseNavale: resupplyNavire")
+            throw new TypeError("Bad argument navire in BaseNavale: resupplyNavire (Service.js)")
         }
 
         try{
-            this.getBaseNavale(nbJoueur).repareNavire(navire);
+            this.getBaseNavale(idJoueur).repareNavire(navire);
         }
         catch(err ){
             console.log(err.stack)
@@ -419,8 +480,59 @@ export default class Service{
         
     }
 
+
+    updateFood(idJoueur){
+        this.getBaseNavale(idJoueur).naviresJ.forEach(element => {
+            element.nourriture -= 5;
+        });
+        
+    }
+
+    moveNavire(xNavire, yNavire, xDeplacement, yDeplacement, idJoueur){
+        let navire = this.getPlateau().getCase(xNavire, yNavire).getContenu()
+
+        if(navire instanceof BaseNavale)
+            throw TypeError("Wrong argument type navire (Base) in Plateau: moveNavire")
+
+        if(! (navire instanceof Navire)){
+            throw new TypeError("Bad argument navire in BaseNavale: moveNavire")
+        }
+        
+        if(! (this.getBaseNavale(idJoueur).naviresJ.includes(navire))){
+            throw new TypeError("resupplyNavire -> Le navire ne vous appartient pas")
+        }
+        
+
+        for(let i = 0; i < navire.getDimension()[1] - 1; i++){
+            if((yNavire - 1) < 0 ||
+               this.getPlateau().getCase(xNavire, yNavire - 1).getContenu() === null ||
+               this.getPlateau().getCase(xNavire, yNavire - 1).getContenu() !== navire){
+               break;
+            }
+            else{
+                yNavire -= 1
+            }
+        }
+
+        if(Math.abs(xNavire - xDeplacement) + Math.abs(yNavire - yDeplacement) <= navire.pm){
+            if(this.getPlateau().enoughSpaceMove(xDeplacement, yDeplacement, navire.getDimension(), navire)){
+                for(let i = 0; i < navire.getDimension()[1]; i++){
+                    this.getPlateau().getCase(xNavire, yNavire + i).vider()
+                }
+                this.updatePlateau(xDeplacement, yDeplacement, navire)
+                navire.pm -= Math.abs(xNavire - xDeplacement) + Math.abs(yNavire - yDeplacement)
+            }
+            else{
+                throw Error("Déplacement impossible")
+            }
+        }
+        else{
+            throw Error("Pas assez de point de déplacement")
+        }
+    }
+
     startGame(){
-        this.createPlateau(10, 10);
+        this.createPlateau(15, 15);
         this.createBaseNavale(1);
         this.createBaseNavale(2);
     }

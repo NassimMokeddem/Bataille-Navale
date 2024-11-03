@@ -35,10 +35,10 @@ export default class Plateau {
      */
     initialiserGrille(nlong, nlarg){
         const grille = new Array();
-        for(let i=0; i < nlong; i++){
+        for(let y=0; y < nlong; y++){
             const ligne = new Array();
-            for(let j=0; j < nlarg; j++){
-                ligne.push(new Case(i, j));
+            for(let x=0; x < nlarg; x++){
+                ligne.push(new Case(x, y));
             }
 
             grille.push(ligne);
@@ -91,6 +91,34 @@ export default class Plateau {
 
                 // Si une seule case est déjà rempli alors pas assez d'espace
                 if(! (this.getCase(x+i, y+j).estVide())){
+                    return false
+                }
+            }
+        }
+
+        // Si toute les cases sont libres alors on peut insérez l'objet
+        return true
+    }
+
+    enoughSpaceMove(x, y, dimension, navire){
+        if(! Array.isArray(dimension)){
+            throw new TypeError("Bad type of dimension in Plateau: enoughSpace")
+        }
+
+        // Vérification des coordonnées
+        if(x+dimension.at(0) > this.nlarg || 
+           y+dimension.at(1) > this.nlong ||
+           x < 0 ||
+           y < 0
+        ){
+            throw new Error("Invalid coordinates for this object in Plateau: enoughSpace")
+        }
+
+        for(let i=0; i<dimension.at(0); i++){
+            for(let j=0; j<dimension.at(1); j++){
+
+                // Si une seule case est déjà rempli alors pas assez d'espace
+                if((! (this.getCase(x+i, y+j).estVide())) && this.getCase(x+i, y+j).getContenu() !== navire){
                     return false
                 }
             }

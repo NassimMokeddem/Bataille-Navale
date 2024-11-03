@@ -26,7 +26,7 @@ export default class BaseNavale{
         } 
         this.dimension = [2,2];
         this.idJoueur = idJoueur;
-        this.argent = 100;
+        this.argent = 1000000;
         this.naviresJ = new Array();
     }
 
@@ -60,8 +60,12 @@ export default class BaseNavale{
          * TO DO
          * Reste à vérifier si le bateau appartient au bon joueur
          */
+        if(!this.naviresJ.includes(navire)){
+            throw new TypeError("resupplyNavire -> Le navire ne vous appartient pas")
+        }
+        
         if(! (navire instanceof Navire)){
-            throw new TypeError("Bad argument navire in BaseNavale: resupplyNavire")
+            throw new TypeError("resupplyNavire -> n'est pas un navire")
         }
 
         navire.setProvision(navire.getProvisionMax())
@@ -74,8 +78,11 @@ export default class BaseNavale{
          * TO DO
          * Reste à vérifier si le bateau appartient au bon joueur
          */
+        if(!this.naviresJ.includes(navire)){
+            throw new TypeError("repareNavire -> Le navire vous appartient pas")
+        }
         if(! (navire instanceof Navire)){
-            throw new TypeError("Bad argument navire in BaseNavale: repareNavire")
+            throw new TypeError("repareNavire -> n'est pas un navire")
         }
 
         navire.setSante(navire.getSanteMax())
