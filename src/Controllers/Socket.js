@@ -42,6 +42,10 @@ export class Socket{
 
 	}
 
+	#sendOtherPlayer(tour){
+		tour?this.joueur1.socket.emit('boatAcquired', this.service.getPlateau()):this.joueur2.socket.emit('boatAcquired', this.service.getPlateau());
+	}
+
 	initPlayer(player, tour){
 		
 		tour?this.joueur2=player:this.joueur1=player;
@@ -73,7 +77,7 @@ export class Socket{
 				if(this.service.buyNavire(data.idJoueur, data.type, data.x, data.y) == 'Pas assez d\'argent')
 					throw new Error('Not enough money');
 				player.socket.emit('boatAcquired', this.service.getPlateau());
-				tour?this.joueur1.socket.emit('boatAcquired', this.service.getPlateau()):this.joueur2.socket.emit('boatAcquired', this.service.getPlateau());
+				this.#sendOtherPlayer(tour);
 
 				console.log('Boat purchased')
 			}
