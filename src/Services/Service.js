@@ -536,4 +536,19 @@ export default class Service{
         this.createBaseNavale(1);
         this.createBaseNavale(2);
     }
+
+    verifierFinDePartie(idJoueur) {
+        const baseNavale = this.getBaseNavale(idJoueur);
+    
+        // Vérifie si le joueur n'a plus d'argent
+        if (baseNavale.getArgent() > 20) {
+            return false;
+        }
+    
+        // Vérifie si tous les navires sont inutilisables ou détruits
+        const tousInutilisables = baseNavale.getNaviresJ().every(navire => navire.estInutilisable() || navire.estDetruit());
+    
+        // Retourne true si la partie est terminée pour le joueur, sinon false
+        return tousInutilisables;
+    }
 }
