@@ -81,7 +81,7 @@ export class Socket{
 				player.socket.emit('boatAcquired', this.service.getPlateau());
 				tour?this.joueur1.socket.emit('boatAcquired', this.service.getPlateau()):this.joueur2.socket.emit('boatAcquired', this.service.getPlateau())
 
-				console.log('Boat purchased in room ', this.partieID, ' from player ', data.idJoueur);
+				console.log('Boat purchased in room ', this.partieID, ' from player ', tour?2:1);
 			}
 			catch(err ){
 				if(err.message == 'Bas argument type in Service: buyNavire'){
