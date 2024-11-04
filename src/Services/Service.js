@@ -433,9 +433,29 @@ export default class Service{
                 throw TypeError("Wrong argument type in Service: tirerNavire\nWent through the first control of Service: tirerNavire")
         }
 
-        if(defenseur.estDetruit())
-            defenseur = null;
-            // this.getPlateau().getCase(xDefenseur, yDefenseur).vider();
+        if(defenseur.getSante() <= 0){
+            
+            for(let i = 0; i < defenseur.getDimension()[1] - 1; i++){
+                if((yDefenseur - 1) < 0 ||
+                   this.getPlateau().getCase(xDefenseur, yDefenseur - 1).getContenu() === null ||
+                   this.getPlateau().getCase(xDefenseur, yDefenseur- 1).getContenu() !== defenseur){
+                   break;
+                }
+                else{
+                    yDefenseur-= 1
+                }
+            }
+            for(let i = 0; i < defenseur.getDimension()[1]; i++){
+                this.getPlateau().getCase(xDefenseur, yDefenseur + i).vider()
+                console.log(this.getPlateau().getCase(xDefenseur, yDefenseur + i).contenu)
+            }
+
+            if(idJoueur == 1)
+                this.getBaseNavale(2).naviresJ.splice(this.getBaseNavale(2).naviresJ.findIndex(defenseur => defenseur), 1);
+            if(idJoueur == 2)
+                this.getBaseNavale(1).naviresJ.splice(this.getBaseNavale(1).naviresJ.findIndex(defenseur => defenseur), 1);
+
+        }
 
         return defenseur
     }
