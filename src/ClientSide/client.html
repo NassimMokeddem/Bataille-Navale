@@ -83,7 +83,11 @@
     socket.on('ERROR', (msg) =>{
         alert(msg);
     })
+    socket.on('Fin De partie', (msg) =>{
+        alert(msg);
 
+        
+    })
     function buyBoat(){
         socket.emit('placeNavire', {type: 'Destroyer', x: Number(document.getElementById("x").value), y: Number(document.getElementById("y").value)});
     }

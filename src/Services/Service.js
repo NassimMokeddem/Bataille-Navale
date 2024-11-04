@@ -238,13 +238,13 @@ export default class Service{
                 prix = 20;
                 break;
             case 'SousMarin':
-                prix = 100;
+                prix = 60;
                 break;
             case 'Fregate':
                 prix = 35;
                 break;
             case 'Trasporteur':
-                prix = 300;
+                prix = 30;
             default:
                 throw new Error("Bas argument type in Service: buyNavire");
         }
@@ -434,8 +434,8 @@ export default class Service{
         }
 
         if(defenseur.estDetruit())
-            delete this.getBaseNavale(idJoueur).naviresJ[defenseur];
-            this.getPlateau().getCase(xDefenseur, yDefenseur).vider();
+            defenseur = null;
+            // this.getPlateau().getCase(xDefenseur, yDefenseur).vider();
 
         return defenseur
     }
@@ -535,5 +535,20 @@ export default class Service{
         this.createPlateau(15, 15);
         this.createBaseNavale(1);
         this.createBaseNavale(2);
+    }
+
+    verifierFinDePartie(idJoueur) {
+        const baseNavale = this.getBaseNavale(idJoueur);
+    
+        // Vérifie si le joueur n'a plus d'argent
+        if (baseNavale.getArgent() >= 20) {
+            return false;
+        }
+    
+        // Vérifie si tous les navires sont inutilisables ou détruits
+        const tousInutilisables = baseNavale.getNaviresJ().every(navire => navire.estInutilisable() || navire.estDetruit());
+    
+        // Retourne true si la partie est terminée pour le joueur, sinon false
+        return tousInutilisables;
     }
 }
