@@ -47,6 +47,7 @@ Une fois le serveur lancé, les joueurs peuvent rejoindre la partie en accédant
 ```plaintext
 http://adresse_serveur/partie/start/
 ```
+Une partie a démarré une fois que les 2 joueurs ont rejoins un salon. Pour créer et rejoindre un salon utilisez les boutons "Create Game" et "Join Game".
 
 ## Technologies utilisées
 
