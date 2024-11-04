@@ -120,8 +120,8 @@ export class Socket{
 
 			try{
 				let def = this.service.tirer(data.xAttaquant, data.yAttaquant, data.xDefenseur, data.yDefenseur, tour?2:1);
-				player.socket.emit('navireEndommage', def);
-				tour?this.joueur1.socket.emit('navireEndommage', def):this.joueur2.socket.emit('navireEndommage', def)
+				player.socket.emit('navireEndommage', this.service.getPlateau());
+				tour?this.joueur1.socket.emit('navireEndommage', this.service.getPlateau()):this.joueur2.socket.emit('navireEndommage', this.service.getPlateau())
 
 				console.log('Boat at ', data.xAttaquant, data.yAttaquant, ' shoot on boat ', data.xDefenseur, data.yDefenseur, ' in room ', this.partieID, ' from player ', tour?2:1);
 			}
