@@ -39,7 +39,7 @@ Avant de commencer, assurez-vous que les éléments suivants sont installés sur
 Pour lancer le serveur de jeu, exécutez la commande suivante :
 
 ```bash
-node server.js
+npm start
 ```
 
 Une fois le serveur lancé, les joueurs peuvent rejoindre la partie en accédant à l'URL suivante dans leur navigateur :
