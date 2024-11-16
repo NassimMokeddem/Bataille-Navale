@@ -47,6 +47,40 @@ Une fois le serveur lancé, les joueurs peuvent rejoindre la partie en accédant
 ```plaintext
 http://adresse_serveur/partie/start/
 ```
+
+La requête API pour démarrer une partie est l'url spécifié au dessus.
+
+### Message des sockets
+Les données à envoyer au serveur doivent respecter le format JSON, défini comme suit:
+```
+   {data1: value1, data2: value2, ...}
+   ```
+
+*Si besoin nous pouvons fournir un fichier avec des exemples de données à envoyer*
+
+Envoyer des messages dans la socket:
+| message identification   |              données attendues                 | description   |
+| :----------------------: | :--------------------------------------------: | :-----------: |
+|        newGame           |                 partieID                       | Créer un salon de jeu en donnant l'identifiant du salon |
+|       joinGame           |                 partieID                       | Rejoint un salon de jeu en donnant l'identifiant du salon |
+|     placeNavire          |                type, x, y                      | Achète un navire en donnant le type de navire a acheté et les coordonnées où placer le navire |
+|    navireAttaque         | xAttaquant, yAttaquant, xDefenseur, yDefenseur | Fait tirer un navire en donnant les coordonnées du navires attaquant et les coordonnées de la cible |
+|    navireDeplace       |   xNavire, yNavire, xDeplacement, yDeplacement   | Déplace un navire en donnant les coordonnées du navire et les coordonnées d'arrivées |
+|      finDeTour         |                                                  | Met fin au tour du joueur |
+
+Recevoir des messages dans la socket:
+| message identification   |               données reçues                   | description   |
+| :----------------------: | :--------------------------------------------: | :-----------: |
+|     game created         |                  plateau                       | Les joueurs recoivent le plateau de jeu crée par le serveur avec les bases navales sur le plateau |
+|      boatAcquired        |                  plateau                       | Après l'achat d'un navire les joueurs recoivent le nouveau plateau avec le nouveau navire |
+|     navireEndommage      |                  plateau                       | Après le tir d'un navire les joueurs recoivent le nouveau plateau avec l'état du navire attaqué actualisé |
+|      navireArrive        |                  plateau                       | Après le déplacement d'un navire les joueurs recoivent le nouveau plateau avec la nouvelle position du navire actualisé |
+|          Tour            |                   message                      | Après qu'un joueur ait annoncé la fin de son tour envoi un message contenant l'indication du tour |
+|          TourD           |                  plateau                       | Après la fin d'un tour la nourriture est actualisé et le plateau actualisé est envoyé aux 2 joueurs |
+|       Fin De partie      |                   message                      | Après la fin d'un tour annonce si la partie est terminée avec le message indiquant aux joueurs lequel a gagné et lequel a perdu |
+|         ERROR            |                   message                      | Une erreur est survenu et le message contient un descriptif de l'erreur rencontré |
+
+
 Une partie a démarré une fois que les 2 joueurs ont rejoins un salon. Pour créer et rejoindre un salon utilisez les boutons "Create Game" et "Join Game".
 
 ## Technologies utilisées
