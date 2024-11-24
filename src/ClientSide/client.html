@@ -1,0 +1,124 @@
+<body>
+    
+    <!--<label for="joueurNumeroB">Joueur Identifiant:</label>
+    <input type="number" id="joueurNumeroB" name="joueurNumeroB">-->
+    <label for="x">X:</label>
+    <input type="number" id="x" name="x">
+    <label for="y">Y:</label>
+    <input type="number" id="y" name="y">
+    <button onclick="buyBoat()">Buy boat</button><br>
+
+    <label for="xAtk">Attaquant X:</label>
+    <input type="number" id="xAtk" name="xAtk">
+    <label for="yAtk">Attaquant Y:</label>
+    <input type="number" id="yAtk" name="yAtk">
+    <label for="xDef">Defenseur X:</label>
+    <input type="number" id="xDef" name="xDef">
+    <label for="yDef">Defenseur Y:</label>
+    <input type="number" id="yDef" name="yDef">
+    <!--<label for="joueurNumeroS">Joueur Identifiant:</label>
+    <input type="number" id="joueurNumeroS" name="joueurNumeroS">-->
+    <button onclick="shootBoat()">Shoot Boat</button><br>
+
+    <label for="xDep">Depart X:</label>
+    <input type="number" id="xDep" name="xDep">
+    <label for="yDep">Depart Y:</label>
+    <input type="number" id="yDep" name="yDep">
+    <label for="xArr">Arrivee X:</label>
+    <input type="number" id="xArr" name="xArr">
+    <label for="yArr">Arrivee Y:</label>
+    <input type="number" id="yArr" name="yArr">
+    <!--<label for="joueurNumeroM">Joueur Identifiant:</label>
+    <input type="number" id="joueurNumeroM" name="joueurNumeroM">-->
+    <button onclick="moveBoat()">Move Boat</button><br>
+    
+    <button onclick="endTurn()">End Turn</button><br>
+
+    <label for="roomID">Room ID:</label>
+    <input type="number" id="roomID" name="roomID">
+    <button onclick="createGame()">Create Game</button>
+    
+    <button onclick="joinGame()">Join Game</button>
+
+    <pre id="turn-state"></pre>
+
+    <pre id="boat-state"></pre>
+    
+    <pre id="json-data"></pre>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+    const socket = io();
+
+    socket.on('game created', (game) => {
+        const preElement = document.getElementById('json-data');
+        preElement.innerHTML = JSON.stringify(game, null, 2);
+    })
+
+    socket.on('boatAcquired', (game) => {
+        const preElement = document.getElementById('json-data');
+        preElement.innerHTML = JSON.stringify(game, null, 2);
+    })
+
+    socket.on('navireEndommage', (boat) => {
+        const preElement = document.getElementById('boat-state');
+        preElement.innerHTML = JSON.stringify(boat, null, 2);
+    })
+
+    socket.on('navireArrive', (game) => {
+        const preElement = document.getElementById('json-data');
+        preElement.innerHTML = JSON.stringify(game, null, 2);
+    })
+
+    socket.on('Tour', (msg) => {
+        const preElement = document.getElementById('turn-state');
+        preElement.innerHTML = JSON.stringify(msg, null, 2);
+    })
+
+    socket.on('TourD', (game) => {
+        const preElement = document.getElementById('json-data');
+        preElement.innerHTML = JSON.stringify(game, null, 2);
+    })
+
+    socket.on('ERROR', (msg) =>{
+        alert(msg);
+    })
+    socket.on('Fin De partie', (msg) =>{
+        alert(msg);
+
+        
+    })
+    function buyBoat(){
+        socket.emit('placeNavire', {type: 'Destroyer', x: Number(document.getElementById("x").value), y: Number(document.getElementById("y").value)});
+    }
+
+    /*
+    * On attend bien des chaînes de caractère pour l'identifiant de la partie
+    */
+    function createGame(){
+        socket.emit('newGame', String(document.getElementById("roomID").value));
+    }
+
+    function joinGame(){
+        socket.emit('joinGame', String(document.getElementById("roomID").value));
+    }
+
+    function shootBoat(){
+        socket.emit('navireAttaque', {xAttaquant: Number(document.getElementById("xAtk").value), yAttaquant: Number(document.getElementById("yAtk").value), xDefenseur: Number(document.getElementById("xDef").value), yDefenseur: Number(document.getElementById("yDef").value)})
+    }
+
+    function moveBoat(){
+        socket.emit('navireDeplace', {xNavire: Number(document.getElementById("xDep").value), yNavire: Number(document.getElementById("yDep").value), xDeplacement: Number(document.getElementById("xArr").value), yDeplacement: Number(document.getElementById("yArr").value)})
+    }
+
+    function endTurn(){
+        socket.emit('finDeTour');
+    }
+
+    // Ne fonctionne pas pour le moment
+    function afficherData(data){
+        const preElement = document.getElementById('json-data');
+        preElement.innerHTML = JSON.stringify(msg, null, 2);
+    }
+    </script>
+</body>
