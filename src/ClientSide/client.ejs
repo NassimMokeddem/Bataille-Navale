@@ -47,11 +47,13 @@
 
     <pre id="boat-state"></pre>
     
-    <pre id="json-data"></pre>
 
     <div id="argent-container"></div>
 
     <div id="game-board"></div>
+
+    <div id="cell-state"></div> <!-- This will display the state of the clicked cell -->
+
 
 
     <script src="/socket.io/socket.io.js"></script>
@@ -63,12 +65,15 @@
 
     var joueur;
 
+    var bigGame;
+
 
     socket.on('game created', (game) => {
         // Initialize the game board based on the fetched state
         gameBoard.innerHTML = ''; // Clear any existing board
 
         updatePlateau(game)
+        
     });
 
 
@@ -76,9 +81,8 @@
         updatePlateau(game)
     })
 
-    socket.on('navireEndommage', (boat) => {
-        const preElement = document.getElementById('boat-state');
-        preElement.innerHTML = JSON.stringify(boat, null, 2);
+    socket.on('navireEndommage', (game) => {
+        updatePlateau(game)
     })
 
     socket.on('navireArrive', (game) => {
@@ -91,8 +95,7 @@
     })
 
     socket.on('TourD', (game) => {
-        const preElement = document.getElementById('json-data');
-        preElement.innerHTML = JSON.stringify(game, null, 2);
+        updatePlateau(game)
     })
 
     socket.on('ERROR', (msg) =>{
@@ -121,9 +124,41 @@
         joueur = 2
     }
 
-    function shootBoat(){
-        socket.emit('navireAttaque', {xAttaquant: Number(document.getElementById("xAtk").value), yAttaquant: Number(document.getElementById("yAtk").value), xDefenseur: Number(document.getElementById("xDef").value), yDefenseur: Number(document.getElementById("yDef").value)})
+    function shootBoat() {
+        const xAtk = Number(document.getElementById("xAtk").value);
+        const yAtk = Number(document.getElementById("yAtk").value);
+        const xDef = Number(document.getElementById("xDef").value);
+        const yDef = Number(document.getElementById("yDef").value);
+
+        // Emit the event to the server
+        socket.emit('navireAttaque', { xAttaquant: xAtk, yAttaquant: yAtk, xDefenseur: xDef, yDefenseur: yDef });
+
+        // Get the dimensions of the game board and cells
+        const cellSize = gameBoard.querySelector('.cell').offsetWidth;
+
+        // Calculate positions
+        const startX = xAtk * cellSize + cellSize / 2; // Center of attacker cell
+        const startY = yAtk * cellSize + cellSize / 2;
+        const endX = xDef * cellSize + cellSize / 2; // Center of defender cell
+        const endY = yDef * cellSize + cellSize / 2;
+
+        // Create the missile element
+        const missile = document.createElement("div");
+        missile.className = "missile";
+        missile.style.left = `${startX}px`;
+        missile.style.top = `${startY}px`;
+        missile.style.setProperty('--target-x', `${endX - startX}px`);
+        missile.style.setProperty('--target-y', `${endY - startY}px`);
+
+        // Append the missile to the game board
+        gameBoard.appendChild(missile);
+
+        // Remove the missile after animation ends
+        missile.addEventListener("animationend", () => {
+            missile.remove();
+        });
     }
+
 
     function moveBoat(){
         socket.emit('navireDeplace', {xNavire: Number(document.getElementById("xDep").value), yNavire: Number(document.getElementById("yDep").value), xDeplacement: Number(document.getElementById("xArr").value), yDeplacement: Number(document.getElementById("yArr").value)})
@@ -131,12 +166,6 @@
 
     function endTurn(){
         socket.emit('finDeTour');
-    }
-
-    // Ne fonctionne pas pour le moment
-    function afficherData(data){
-        const preElement = document.getElementById('json-data');
-        preElement.innerHTML = JSON.stringify(msg, null, 2);
     }
 
     function updatePlateau(game){
@@ -166,13 +195,6 @@
                         if(joueur === 2 && (rowIndex ===  game.grille.length - 1 && colIndex === row.length - 1)){
                             argentContainer.innerHTML = `<div class="argent-display">💰 ${cell.contenu.argent}</div>`
                         }
-                        // Display the argent value in the argentContainer
-                        /*
-                        const argentDisplay = document.createElement('div');
-                        argentDisplay.className = 'argent-display';
-                        argentDisplay.textContent = `💰 ${cell.contenu.argent}`;
-                        argentContainer.appendChild(argentDisplay);
-                        */
                     }
                     else if('type' in cell.contenu){
                         const boatIcon = document.createElement('img');
@@ -188,12 +210,56 @@
 
                 // Add click event to send the player's move
                 cellDiv.addEventListener('click', () => {
-                    socket.emit('player_move', { row: rowIndex, col: colIndex });
+                    const row = parseInt(cellDiv.dataset.row, 10);
+                    const col = parseInt(cellDiv.dataset.col, 10);
+                    displayCellState(row, col); // Function to display the state of the clicked cell
                 });
 
                 gameBoard.appendChild(cellDiv);
             });
         });
+
+        bigGame = game;
     }
+
+    function displayCellState(row, col) {
+    const cell = bigGame.grille[row][col];
+    const stateElement = document.getElementById('cell-state'); // Element to display the state
+
+    if (cell.contenu !== null) {
+        if ('argent' in cell.contenu) {
+            // If it's a base, show its argent value
+            stateElement.innerHTML = `
+                <h3>Base at (${row}, ${col})</h3>
+                <p>💰 Argent: ${cell.contenu.argent}</p>
+            `;
+        } else if ('type' in cell.contenu) {
+            // If it's a boat, show all boat properties
+            const boatInfo = cell.contenu; // The Navire object
+
+            stateElement.innerHTML = `
+                <h3>Boat Information at (${row}, ${col})</h3>
+                <p><strong>Type:</strong> ${boatInfo.type}</p>
+                <p><strong>Health:</strong> ${boatInfo.sante} / ${boatInfo.santeMax}</p>
+                <p><strong>Damage:</strong> ${boatInfo.degat}</p>
+                <p><strong>Armor:</strong> ${boatInfo.armure}</p>
+                <p><strong>Movement Points:</strong> ${boatInfo.pm}</p>
+                <p><strong>Action Points:</strong> ${boatInfo.pa}</p>
+                <p><strong>Range:</strong> ${boatInfo.portee}</p>
+                <p><strong>Crew:</strong> ${boatInfo.equipage} / ${boatInfo.maxEquipage}</p>
+                <p><strong>Food:</strong> ${boatInfo.nourriture} / ${boatInfo.maxNourriture}</p>
+                <p><strong>Dimensions:</strong> ${boatInfo.dimension[0]} x ${boatInfo.dimension[1]}</p>
+                <p><strong>Status:</strong> ${boatInfo.inutilisable ? 'Disabled' : 'Active'}</p>
+            `;
+        }
+    } else {
+        // If the cell is empty
+        stateElement.innerHTML = `Cell at (${row}, ${col}) is empty.`;
+    }
+
+    // Show the state element by adding the 'active' class
+    stateElement.classList.add('active');
+}
+
     </script>
 </body>
