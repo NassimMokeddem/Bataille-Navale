@@ -5,11 +5,23 @@
     
     <!--<label for="joueurNumeroB">Joueur Identifiant:</label>
     <input type="number" id="joueurNumeroB" name="joueurNumeroB">-->
-    <label for="x">X:</label>
-    <input type="number" id="x" name="x">
-    <label for="y">Y:</label>
-    <input type="number" id="y" name="y">
-    <button onclick="buyBoat()">Buy boat</button><br>
+
+    <div id="buy-boat">
+        <span id="close-btn" style="cursor: pointer; font-size: 20px; position: absolute; top: 10px; right: 10px;">&times;</span>
+        <label for="x">X:</label>
+        <input type="number" id="x" name="x">
+        <label for="y">Y:</label>
+        <input type="number" id="y" name="y">
+        <!-- Dropdown for selecting boat type -->
+        <label for="boat-type">Boat Type:</label>
+        <select id="boat-type" name="boat-type">
+            <option value="Destroyer">Destroyer</option>
+            <option value="SousMarin">SousMarin</option>
+            <option value="Fregate">Fregate</option>
+            <option value="Transporteur">Transporteur</option>
+        </select><br>
+        <button onclick="buyBoat()">Buy boat</button><br>
+    </div>
 
     <label for="xAtk">Attaquant X:</label>
     <input type="number" id="xAtk" name="xAtk">
@@ -107,7 +119,7 @@
         
     })
     function buyBoat(){
-        socket.emit('placeNavire', {type: 'Destroyer', x: Number(document.getElementById("x").value), y: Number(document.getElementById("y").value)});
+        socket.emit('placeNavire', {type: document.getElementById("boat-type").value, x: Number(document.getElementById("x").value), y: Number(document.getElementById("y").value)});
     }
 
     /*
@@ -198,7 +210,17 @@
                     }
                     else if('type' in cell.contenu){
                         const boatIcon = document.createElement('img');
-                        boatIcon.src = 'icons/boat.png'; // Replace with the correct path to your boat icon
+                        switch(cell.contenu.type) {
+                            case 'Destroyer':
+                                boatIcon.src = 'icons/destroyer.png';
+                                break;
+                            case 'SousMarin':
+                                boatIcon.src = 'icons/sous-marin.png';
+                                break;
+                            case 'Fregate':
+                                boatIcon.src = 'icons/fregate.png';
+                                break;
+                        }
                         boatIcon.alt = 'Boat';
                         boatIcon.className = 'icon';
                         cellDiv.appendChild(boatIcon);
@@ -233,6 +255,15 @@
                 <h3>Base at (${row}, ${col})</h3>
                 <p>💰 Argent: ${cell.contenu.argent}</p>
             `;
+
+            // Check if the base belongs to the current player (for example, player 1)
+            //if ((row >= 0 && row <= 1) && (col >= 0 && col <= 1) && joueur === 1) {  // Replace with the condition for your base locations
+                // Show the buy-boat div and set the coordinates
+                document.getElementById('buy-boat').style.display = 'block';
+                document.getElementById('buy-boat').style.setProperty("display", "block");
+                document.getElementById('x').value = row;  // Set the X coordinate in the input
+                document.getElementById('y').value = col;  // Set the Y coordinate in the input
+            //}
         } else if ('type' in cell.contenu) {
             // If it's a boat, show all boat properties
             const boatInfo = cell.contenu; // The Navire object
@@ -260,6 +291,18 @@
     // Show the state element by adding the 'active' class
     stateElement.classList.add('active');
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Select the close button
+    const closeBtn = document.getElementById('close-btn');
+    const buyBoatDiv = document.getElementById('buy-boat');
+
+    // Add event listener to the close button
+    closeBtn.addEventListener('click', () => {
+        buyBoatDiv.style.display = 'none';  // Hide the buy-boat div when the cross is clicked
+    });
+});
+
 
     </script>
 </body>

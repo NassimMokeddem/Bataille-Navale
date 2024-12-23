@@ -3,6 +3,7 @@
     grid-template-columns: repeat(15, 30px);  /* Default size (adjust as needed) */
     grid-template-rows: repeat(15, 30px);     /* Default size (adjust as needed) */
     gap: 1px;  /* Space between cells */
+    margin-right: 300px; /* Space for the buy-boat div */
 }
 
 .cell {
@@ -92,7 +93,6 @@
     display: block;
 }
 
-
 /* style.css */
 @keyframes shoot {
     from {
@@ -111,4 +111,32 @@
     border-radius: 50%;
     z-index: 10;
     animation: shoot 1s linear forwards;
+}
+
+#buy-boat {
+    display: none; /* Hide the buy-boat div by default */
+    position: fixed;
+    top: 20%; /* Position it at the top */
+    right: 20px; /* Position it on the right side */
+    width: 250px;  /* Adjust the width */
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    border-radius: 8px;
+}
+
+/* Close button style */
+#buy-boat .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+}
+
+#buy-boat .close-btn:hover {
+    color: red;
 }
