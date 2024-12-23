@@ -1,0 +1,55 @@
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(15, 30px);  /* Default size (adjust as needed) */
+    grid-template-rows: repeat(15, 30px);     /* Default size (adjust as needed) */
+    gap: 1px;  /* Space between cells */
+}
+
+.cell {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    background-color: lightblue;  /* Default background */
+    transition: background-color 0.3s ease;
+}
+
+.cell:hover {
+    background-color: lightgreen;  /* Highlight cell on hover */
+}
+
+.cell.hit {
+    background-color: red;  /* Color for hit cells */
+}
+
+.cell.miss {
+    background-color: blue;  /* Color for miss cells */
+}
+
+.icon {
+    width: 20px;  /* Adjust icon size as needed */
+    height: 20px;
+    display: block;
+    margin: auto;  /* Center the icon in the cell */
+    pointer-events: none;  /* Prevent icons from interfering with cell clicks */
+}
+
+
+#argent-container {
+    position: absolute; /* Position it relative to the document */
+    top: 10px; /* Distance from the top of the viewport */
+    right: 10px; /* Distance from the right of the viewport */
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #0020ff;
+    z-index: 1000; /* Ensure it stays above other elements */
+    border-radius: 5px; /* Optional: Add rounded corners */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for better visibility */
+}
+
+.argent-display {
+    font-size: 14px;
+    color: gold; /* Use a color that represents money */
+    margin-bottom: 5px;
+    text-align: right; /* Align text to the right */
+}

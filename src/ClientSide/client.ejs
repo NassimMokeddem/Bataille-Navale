@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
     
     <!--<label for="joueurNumeroB">Joueur Identifiant:</label>
@@ -46,18 +49,31 @@
     
     <pre id="json-data"></pre>
 
+    <div id="argent-container"></div>
+
+    <div id="game-board"></div>
+
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
     const socket = io();
 
+    const gameBoard = document.getElementById('game-board');
+    const argentContainer = document.getElementById('argent-container');
+
+    var joueur;
+
+
     socket.on('game created', (game) => {
-        const preElement = document.getElementById('json-data');
-        preElement.innerHTML = JSON.stringify(game, null, 2);
-    })
+        // Initialize the game board based on the fetched state
+        gameBoard.innerHTML = ''; // Clear any existing board
+
+        updatePlateau(game)
+    });
+
 
     socket.on('boatAcquired', (game) => {
-        const preElement = document.getElementById('json-data');
-        preElement.innerHTML = JSON.stringify(game, null, 2);
+        updatePlateau(game)
     })
 
     socket.on('navireEndommage', (boat) => {
@@ -66,8 +82,7 @@
     })
 
     socket.on('navireArrive', (game) => {
-        const preElement = document.getElementById('json-data');
-        preElement.innerHTML = JSON.stringify(game, null, 2);
+        updatePlateau(game)
     })
 
     socket.on('Tour', (msg) => {
@@ -97,10 +112,13 @@
     */
     function createGame(){
         socket.emit('newGame', String(document.getElementById("roomID").value));
+        console.log('toto')
+        joueur = 1
     }
 
     function joinGame(){
         socket.emit('joinGame', String(document.getElementById("roomID").value));
+        joueur = 2
     }
 
     function shootBoat(){
@@ -119,6 +137,63 @@
     function afficherData(data){
         const preElement = document.getElementById('json-data');
         preElement.innerHTML = JSON.stringify(msg, null, 2);
+    }
+
+    function updatePlateau(game){
+        // Initialize the game board based on the fetched state
+        gameBoard.innerHTML = '';
+
+        // Iterate over each row in the grid
+        game.grille.forEach((row, rowIndex) => {
+            row.forEach((cell, colIndex) => {
+                const cellDiv = document.createElement('div');
+                cellDiv.className = 'cell';
+                cellDiv.dataset.row = rowIndex;
+                cellDiv.dataset.col = colIndex;
+
+                if( cell.contenu !== null ){
+                    if('argent' in cell.contenu){
+                        const baseIcon = document.createElement('img');
+                        baseIcon.src = 'icons/base.png'; // Replace with the correct path to your boat icon
+                        baseIcon.alt = 'Base';
+                        baseIcon.className = 'icon';
+                        cellDiv.appendChild(baseIcon);
+
+                        if(joueur === 1 && (rowIndex === 0 && colIndex === 0)){
+                            argentContainer.innerHTML = `<div class="argent-display">💰 ${cell.contenu.argent}</div>`
+                        }
+
+                        if(joueur === 2 && (rowIndex ===  game.grille.length - 1 && colIndex === row.length - 1)){
+                            argentContainer.innerHTML = `<div class="argent-display">💰 ${cell.contenu.argent}</div>`
+                        }
+                        // Display the argent value in the argentContainer
+                        /*
+                        const argentDisplay = document.createElement('div');
+                        argentDisplay.className = 'argent-display';
+                        argentDisplay.textContent = `💰 ${cell.contenu.argent}`;
+                        argentContainer.appendChild(argentDisplay);
+                        */
+                    }
+                    else if('type' in cell.contenu){
+                        const boatIcon = document.createElement('img');
+                        boatIcon.src = 'icons/boat.png'; // Replace with the correct path to your boat icon
+                        boatIcon.alt = 'Boat';
+                        boatIcon.className = 'icon';
+                        cellDiv.appendChild(boatIcon);
+                    }
+                    else
+                        console.log('unknown class of object' + cell)
+                }
+                //console.log(cell.contenu.degat)
+
+                // Add click event to send the player's move
+                cellDiv.addEventListener('click', () => {
+                    socket.emit('player_move', { row: rowIndex, col: colIndex });
+                });
+
+                gameBoard.appendChild(cellDiv);
+            });
+        });
     }
     </script>
 </body>

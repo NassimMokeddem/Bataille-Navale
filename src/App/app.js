@@ -14,7 +14,12 @@ app.use(morgan('dev'));
 
 app.set('io', io);
 
-app.use('/partie', router);
+app.set("view engine", "ejs");
+app.set("views", "./src/ClientSide");
+
+app.use(express.static("public"))
+app.use('/', router);
+
 
 server.listen(port, () => {
     console.log(`Started app listening on port ${port}`)
