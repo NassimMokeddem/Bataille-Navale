@@ -17,13 +17,13 @@ router.get('/', (req, res) => {
 })
 
 router.get('/start', (req, res) => {
-    res.sendFile(join(__dirname, '../ClientSide/client.html'))
+    res.render('client', {});
     const io = req.app.get('io');
-		io.on('connection', (socket) =>{
-			let player = {socket: socket, partieID: null};
-			socket.on('newGame', (partieID) => new Socket(player, partieID));
-			socket.on('joinGame', (partieID) => Socket.joinPartie(player, partieID));
-		});
+        io.on('connection', (socket) =>{
+            let player = {socket: socket, partieID: null};
+            socket.on('newGame', (partieID) => new Socket(player, partieID));
+            socket.on('joinGame', (partieID) => Socket.joinPartie(player, partieID));
+        });
 })
 
 router.all('*', (req, res) => {
