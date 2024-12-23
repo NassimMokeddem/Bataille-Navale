@@ -18,6 +18,7 @@ app.set("view engine", "ejs");
 app.set("views", "./src/ClientSide");
 
 app.use(express.static("public"))
+app.use(express.static("src/ClientSide"))
 app.use('/', router);
 
 
