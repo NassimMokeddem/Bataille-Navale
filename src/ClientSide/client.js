@@ -177,22 +177,7 @@ const socket = io();
     const stateElement = document.getElementById('cell-state'); // Element to display the state
 
     if (cell.contenu !== null) {
-        if ('argent' in cell.contenu) {
-            // If it's a base, show its argent value
-            stateElement.innerHTML = `
-                <h3>Base at (${row}, ${col})</h3>
-                <p>💰 Argent: ${cell.contenu.argent}</p>
-            `;
-
-            // Check if the base belongs to the current player (for example, player 1)
-            //if ((row >= 0 && row <= 1) && (col >= 0 && col <= 1) && joueur === 1) {  // Replace with the condition for your base locations
-                // Show the buy-boat div and set the coordinates
-                document.getElementById('buy-boat').style.display = 'block';
-                document.getElementById('buy-boat').style.setProperty("display", "block");
-                document.getElementById('x').value = row;  // Set the X coordinate in the input
-                document.getElementById('y').value = col;  // Set the Y coordinate in the input
-            //}
-        } else if ('type' in cell.contenu) {
+            if ('type' in cell.contenu) {
             // If it's a boat, show all boat properties
             const boatInfo = cell.contenu; // The Navire object
 
@@ -210,16 +195,25 @@ const socket = io();
                 <p><strong>Dimensions:</strong> ${boatInfo.dimension[0]} x ${boatInfo.dimension[1]}</p>
                 <p><strong>Status:</strong> ${boatInfo.inutilisable ? 'Disabled' : 'Active'}</p>
             `;
+            stateElement.classList.add('active');
+        }
+        else if ('argent' in cell.contenu){
+            //if ((row >= 0 && row <= 1) && (col >= 0 && col <= 1) && joueur === 1) {  // Replace with the condition for your base locations
+                // Show the buy-boat div and set the coordinates
+                document.getElementById('buy-boat').style.display = 'block';
+                document.getElementById('buy-boat').style.setProperty("display", "block");
+                document.getElementById('x').value = row;  // Set the X coordinate in the input
+                document.getElementById('y').value = col;  // Set the Y coordinate in the input
+            //}
         }
     } else {
         // If the cell is empty
         stateElement.innerHTML = `Cell at (${row}, ${col}) is empty.`;
+        stateElement.classList.add('active');
     }
-
-    // Show the state element by adding the 'active' class
-    stateElement.classList.add('active');
 }
 
+// a retirer à terme sert à fermer le buy boat quand plus besoin
 document.addEventListener('DOMContentLoaded', () => {
     // Select the close button
     const closeBtn = document.getElementById('close-btn');
@@ -231,3 +225,62 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+//Détéction des clicks hors d'éléments pour cacher des interfaces
+document.addEventListener('click', function(event) {
+    console.log(event.target)
+
+    console.log("is in buy-boat ? " + isAboatCell(event.target))
+
+    if(!isEmptyCell(event.target) && !isAboatCell(event.target))
+        document.getElementById('cell-state').classList.remove('active')
+
+    // Detect Click Outside of the board and removes the cell-state
+    //if(!event.target.classList.contains("cell") && document.getElementById('cell-state').classList.contains('active'))
+    //    document.getElementById('cell-state').classList.remove('active')
+
+    // hide the buy boat if not clicked on a base
+    if(event.target.childNodes.length === 0 && (event.target.id !== 'buy-boat' || event.target.parentElement.id !== 'buy-boat'))
+        document.getElementById('buy-boat').style.display = 'none'
+    else if (event.target.childNodes.length > 0){
+        if(event.target.childNodes[0].alt !== 'Base')
+            document.getElementById('buy-boat').style.display = 'none'
+    }
+    
+    if(event.target.id === 'buy-boat' || event.target.parentElement.id === 'buy-boat')
+        alert('tata')
+});
+
+function isAbaseCell(target){
+    if(target.childNodes.length === 0)
+        return false
+    else{
+        if(target.childNodes[0].alt !== 'Base')
+            return false
+        else
+            return true
+    }
+}
+
+// PROBLEME
+function isAboatCell(target){
+    if(target.childNodes.length === 0)
+        return false
+    else{
+        if(target.childNodes[0].alt !== 'Boat')
+            return false
+        else
+            return true
+    }
+}
+
+function isEmptyCell(target){
+    if(target.classList.contains('cell') && target.childNodes.length === 0)
+        return true
+    return false
+}
+
+function inBuyBoat(target){
+    if(target.id === 'buy-boat' || target.parentElement.id === 'buy-boat')
+        return true
+    return false
+}
