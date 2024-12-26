@@ -268,3 +268,44 @@ function inBuyBoat(target){
         return true
     return false
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const homeScreen = document.getElementById('home-screen');
+    const gameContainer = document.getElementById('game-container');
+
+    function showHomeScreen() {
+        homeScreen.style.display = 'flex';
+        gameContainer.style.display = 'none';
+    }
+
+    function showGameScreen() {
+        homeScreen.style.display = 'none';
+        gameContainer.style.display = 'block';
+    }
+
+    // Attach event handlers to the buttons
+    document.querySelector('[onclick="createGame()"]').addEventListener('click', () => {
+        createGame(); // Call your existing createGame function
+        showGameScreen(); // Transition to game screen
+    });
+
+    document.querySelector('[onclick="joinGame()"]').addEventListener('click', () => {
+        joinGame(); // Call your existing joinGame function
+        showGameScreen(); // Transition to game screen
+    });
+
+    // Initialize by showing the home screen
+    showHomeScreen();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const startButton = document.getElementById('start-button');
+    const startContent = document.getElementById('start-content');
+    const menuContent = document.getElementById('menu-content');
+
+    // Event listener for the START button
+    startButton.addEventListener('click', () => {
+        startContent.style.display = 'none'; // Hide the START button
+        menuContent.style.display = 'block'; // Show the Room ID menu
+    });
+});

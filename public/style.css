@@ -1,3 +1,11 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%; /* Ensure the body spans the entire width */
+    height: 100%; /* Ensure the body spans the entire height */
+    overflow: hidden; /* Prevent scrolling if not needed */
+}
+
 #game-board {
     display: grid;
     grid-template-columns: repeat(15, 30px);  /* Default size (adjust as needed) */
@@ -232,3 +240,143 @@
 #end-turn {
     display: none;
 }
+
+/* Ensure no extra spacing in the home screen */
+#home-screen {
+    margin: 0; /* Remove any default margin */
+    padding: 0; /* Remove any default padding */
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background-image: url('/icons/home.png'); /* Path to your background image */
+    background-size: cover; /* Ensure the image covers the entire screen */
+    background-repeat: no-repeat; /* Prevent tiling */
+    background-position: center; /* Center the image */
+    background-attachment: fixed; /* Optional: Fix background during scroll */
+    height: 100vh; /* Full viewport height */
+    width: 100vw; /* Full viewport width */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* Background for the game container */
+#game-container {
+    display: none; /* Initially hidden */
+    background-size: cover; /* Ensure the image covers the entire screen */
+    background-position: center; /* Center the image */
+    height: 100vh; /* Full viewport height */
+    padding: 20px; /* Padding around content */
+    overflow-y: auto; /* Scroll if content overflows */
+}
+
+#home-screen {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+}
+  
+#home-screen > div { /* Target the direct child div of #home-screen */
+margin-top: 350px; /* Add 150px top margin to the div containing buttons */
+}
+
+#menu-content button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 16px;
+    background-color: #333; /* Darker background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#menu-content button:hover {
+    background-color: #555; /* Slightly lighter shade on hover */
+}
+
+.button-54 {
+    padding: 20px 40px; /* Larger padding for a bigger button */
+    font-size: 42px; /* Larger text size */
+    font-weight: bold; /* Bold text */
+    color: black;
+    background-color: rgba(153, 153, 153, 0.7);
+    border: 2px solid black; /* Black border for a sleek look */
+    border-radius: 10px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor for interactivity */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Add subtle shadow */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition effects */
+}
+
+.button-54:hover {
+    background-color: #555; /* Slightly lighter shade on hover */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+.button-54:active {
+    background-color: rgba(255, 255, 255, 0.6); /* Darker when clicked */
+    transform: scale(0.95); /* Slightly shrink when clicked */
+}
+
+.menu-window {
+    background-color: rgba(153, 153, 153, 0.5); /* Semi-transparent grey background */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+    padding: 20px 40px; /* Padding inside the window */
+    text-align: center; /* Center align content */
+    min-width: 300px; /* Minimum width for the window */
+    max-width: 400px; /* Maximum width for responsiveness */
+}
+
+.menu-window button {
+    width: 150px; /* Set a fixed width for all buttons */
+    padding: 10px 20px; /* Ensure consistent padding */
+    margin: 10px; /* Add spacing between buttons */
+    font-size: 16px; /* Consistent font size */
+    background-color: #333; /* Darker background color */
+    color: white; /* White text for contrast */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor for interactivity */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+}
+
+.menu-window button:hover {
+    background-color: #555; /* Slightly lighter background on hover */
+    transform: scale(1.05); /* Slight scaling effect on hover */
+}
+
+.menu-window button:active {
+    background-color: #222; /* Darker color when clicked */
+    transform: scale(0.95); /* Slight shrinking effect on click */
+}
+
+/* Style for the label and input container */
+.menu-window label {
+    font-size: 16px; /* Increase font size for better readability */
+    font-weight: bold; /* Make the label bold */
+    margin-bottom: 10px; /* Add spacing below the label */
+    display: block; /* Ensure the label is on its own line */
+    text-align: left; /* Align text to the left */
+}
+
+/* Style for the input field */
+.menu-window input {
+    width: calc(100% - 20px); /* Full width minus padding */
+    padding: 10px; /* Add padding for better usability */
+    font-size: 16px; /* Increase font size for better readability */
+    border: 1px solid #ccc; /* Add a light border */
+    border-radius: 5px; /* Rounded corners */
+    box-sizing: border-box; /* Include padding in the total width */
+}
+
+/* Optional focus effect for the input */
+.menu-window input:focus {
+    border-color: #007BFF; /* Highlight border on focus */
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow */
+}
+
