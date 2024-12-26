@@ -11,6 +11,7 @@ const socket = io();
     socket.on('game created', (game) => {
         // Initialize the game board based on the fetched state
         gameBoard.innerHTML = ''; // Clear any existing board
+        document.getElementById('end-turn').style.display = 'block'
 
         updatePlateau(game)
         
@@ -164,24 +165,24 @@ const socket = io();
                     const col = parseInt(cellDiv.dataset.col, 10);
                     displayCellState(row, col); // Function to display the state of the clicked cell
                 });
-
+                
                 gameBoard.appendChild(cellDiv);
             });
         });
-
+        
         bigGame = game;
     }
-
+    
     function displayCellState(row, col) {
-    const cell = bigGame.grille[row][col];
-    const stateElement = document.getElementById('cell-state'); // Element to display the state
-
-    if (cell.contenu !== null) {
+        const cell = bigGame.grille[row][col];
+        const stateElement = document.getElementById('cell-state'); // Element to display the state
+        
+        if (cell.contenu !== null) {
             if ('type' in cell.contenu) {
-            // If it's a boat, show all boat properties
-            const boatInfo = cell.contenu; // The Navire object
-
-            stateElement.innerHTML = `
+                // If it's a boat, show all boat properties
+                const boatInfo = cell.contenu; // The Navire object
+                
+                stateElement.innerHTML = `
                 <h3>Boat Information at (${row}, ${col})</h3>
                 <p><strong>Type:</strong> ${boatInfo.type}</p>
                 <p><strong>Health:</strong> ${boatInfo.sante} / ${boatInfo.santeMax}</p>
@@ -194,16 +195,20 @@ const socket = io();
                 <p><strong>Food:</strong> ${boatInfo.nourriture} / ${boatInfo.maxNourriture}</p>
                 <p><strong>Dimensions:</strong> ${boatInfo.dimension[0]} x ${boatInfo.dimension[1]}</p>
                 <p><strong>Status:</strong> ${boatInfo.inutilisable ? 'Disabled' : 'Active'}</p>
-            `;
-            stateElement.classList.add('active');
+                `;
+                stateElement.classList.add('active');
+                document.getElementById("move-boat").style.display='block'
+                document.getElementById("shoot-boat").style.display='block'
+                document.getElementById("xDep").value = row
+                document.getElementById("yDep").value = col
+                document.getElementById("xAtk").value = row
+                document.getElementById("yAtk").value = col
         }
         else if ('argent' in cell.contenu){
             //if ((row >= 0 && row <= 1) && (col >= 0 && col <= 1) && joueur === 1) {  // Replace with the condition for your base locations
                 // Show the buy-boat div and set the coordinates
                 document.getElementById('buy-boat').style.display = 'block';
                 document.getElementById('buy-boat').style.setProperty("display", "block");
-                document.getElementById('x').value = row;  // Set the X coordinate in the input
-                document.getElementById('y').value = col;  // Set the Y coordinate in the input
             //}
         }
     } else {
@@ -213,41 +218,21 @@ const socket = io();
     }
 }
 
-// a retirer à terme sert à fermer le buy boat quand plus besoin
-document.addEventListener('DOMContentLoaded', () => {
-    // Select the close button
-    const closeBtn = document.getElementById('close-btn');
-    const buyBoatDiv = document.getElementById('buy-boat');
-
-    // Add event listener to the close button
-    closeBtn.addEventListener('click', () => {
-        buyBoatDiv.style.display = 'none';  // Hide the buy-boat div when the cross is clicked
-    });
-});
-
 //Détéction des clicks hors d'éléments pour cacher des interfaces
 document.addEventListener('click', function(event) {
     console.log(event.target)
 
-    console.log("is in buy-boat ? " + isAboatCell(event.target))
+    console.log("is in buy-boat ? " + inBuyBoat(event.target))
 
-    if(!isEmptyCell(event.target) && !isAboatCell(event.target))
+    if(!isAboatCell(event.target)) {
         document.getElementById('cell-state').classList.remove('active')
-
-    // Detect Click Outside of the board and removes the cell-state
-    //if(!event.target.classList.contains("cell") && document.getElementById('cell-state').classList.contains('active'))
-    //    document.getElementById('cell-state').classList.remove('active')
+        document.getElementById("move-boat").style.display='none'
+        document.getElementById("shoot-boat").style.display='none'
+    }
 
     // hide the buy boat if not clicked on a base
-    if(event.target.childNodes.length === 0 && (event.target.id !== 'buy-boat' || event.target.parentElement.id !== 'buy-boat'))
+    if(!inBuyBoat(event.target) && !isAbaseCell(event.target))
         document.getElementById('buy-boat').style.display = 'none'
-    else if (event.target.childNodes.length > 0){
-        if(event.target.childNodes[0].alt !== 'Base')
-            document.getElementById('buy-boat').style.display = 'none'
-    }
-    
-    if(event.target.id === 'buy-boat' || event.target.parentElement.id === 'buy-boat')
-        alert('tata')
 });
 
 function isAbaseCell(target){
@@ -261,7 +246,6 @@ function isAbaseCell(target){
     }
 }
 
-// PROBLEME
 function isAboatCell(target){
     if(target.childNodes.length === 0)
         return false

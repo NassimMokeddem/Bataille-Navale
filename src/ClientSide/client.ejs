@@ -19,34 +19,34 @@
             <option value="SousMarin">SousMarin</option>
             <option value="Fregate">Fregate</option>
         </select><br>
-        <button onclick="buyBoat()">Buy boat</button><br>
+        <button onclick="buyBoat()" class="button-54" role="button">Buy boat</button><br>
     </div>
 
-    <label for="xAtk">Attaquant X:</label>
-    <input type="number" id="xAtk" name="xAtk">
-    <label for="yAtk">Attaquant Y:</label>
-    <input type="number" id="yAtk" name="yAtk">
-    <label for="xDef">Defenseur X:</label>
-    <input type="number" id="xDef" name="xDef">
-    <label for="yDef">Defenseur Y:</label>
-    <input type="number" id="yDef" name="yDef">
-    <!--<label for="joueurNumeroS">Joueur Identifiant:</label>
-    <input type="number" id="joueurNumeroS" name="joueurNumeroS">-->
-    <button onclick="shootBoat()">Shoot Boat</button><br>
+    <div id="shoot-boat">
+        <label for="xAtk">Attaquant X:</label>
+        <input type="number" id="xAtk" name="xAtk"><br>
+        <label for="yAtk">Attaquant Y:</label>
+        <input type="number" id="yAtk" name="yAtk"><br>
+        <label for="xDef">Defenseur X:</label>
+        <input type="number" id="xDef" name="xDef"><br>
+        <label for="yDef">Defenseur Y:</label>
+        <input type="number" id="yDef" name="yDef"><br>
+        <button onclick="shootBoat()" class="button-54" role="button">Shoot Boat</button><br>
+    </div>
 
-    <label for="xDep">Depart X:</label>
-    <input type="number" id="xDep" name="xDep">
-    <label for="yDep">Depart Y:</label>
-    <input type="number" id="yDep" name="yDep">
-    <label for="xArr">Arrivee X:</label>
-    <input type="number" id="xArr" name="xArr">
-    <label for="yArr">Arrivee Y:</label>
-    <input type="number" id="yArr" name="yArr">
-    <!--<label for="joueurNumeroM">Joueur Identifiant:</label>
-    <input type="number" id="joueurNumeroM" name="joueurNumeroM">-->
-    <button onclick="moveBoat()">Move Boat</button><br>
+    <div id="move-boat">
+        <label for="xDep">Depart X:</label>
+        <input type="number" id="xDep" name="xDep"><br>
+        <label for="yDep">Depart Y:</label>
+        <input type="number" id="yDep" name="yDep"><br>
+        <label for="xArr">Arrivee X:</label>
+        <input type="number" id="xArr" name="xArr"><br>
+        <label for="yArr">Arrivee Y:</label>
+        <input type="number" id="yArr" name="yArr"><br>
+        <button onclick="moveBoat()" class="button-54" role="button">Move Boat</button><br>
+    </div>
     
-    <button onclick="endTurn()">End Turn</button><br>
+    <button onclick="endTurn()" id="end-turn" class="button-27" role="button">End Turn</button><br>
 
     <label for="roomID">Room ID:</label>
     <input type="number" id="roomID" name="roomID">
