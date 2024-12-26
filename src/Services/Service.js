@@ -446,9 +446,30 @@ export default class Service{
 
     updateFood(idJoueur){
         this.getBaseNavale(idJoueur).naviresJ.forEach(element => {
-            element.nourriture -= 5;
-        });
-        
+            if(element.inutilisable === false){
+                if(element.equipage === 1 && element.nourriture === 0){
+                    element.inutilisable = true
+                    element.equipage = 0
+                }
+                else if(element.nourriture - element.equipage >= 0)
+                    element.nourriture -= element.equipage
+                else{
+                    while(element.nourriture - element.equipage < 0){
+                        if(element.equipage - 1 >= 1){
+                            element.equipage -= 1
+                            element.nourriture += 20
+                        }
+                        // else{
+                        //     element.inutilisable = true
+                        //     break
+                        // }
+                    }
+                    if(element.inutilisable === false){
+                        element.nourriture -= element.equipage
+                    }
+                }
+            }
+        })
     }
 
     moveNavire(xNavire, yNavire, xDeplacement, yDeplacement, idJoueur){
