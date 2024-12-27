@@ -218,56 +218,68 @@ const socket = io();
     }
 }
 
-//Détéction des clicks hors d'éléments pour cacher des interfaces
-document.addEventListener('click', function(event) {
-    console.log(event.target)
+// Détéction des clicks hors d'éléments pour cacher des interfaces
+// Detect clicks outside menus to hide interfaces
+document.addEventListener('click', function (event) {
+    const buyBoatElement = document.getElementById('buy-boat');
+    const cellStateElement = document.getElementById('cell-state');
+    const moveBoatElement = document.getElementById('move-boat');
+    const shootBoatElement = document.getElementById('shoot-boat');
 
-    console.log("is in buy-boat ? " + inBuyBoat(event.target))
+    // Check if the click is inside #buy-boat or #cell-state
+    const isInsideBuyBoat = buyBoatElement.contains(event.target);
+    const isInsideCellState = cellStateElement.contains(event.target);
+    const isInsideMoveBoat = moveBoatElement.contains(event.target);
+    const isInsideShootBoat = shootBoatElement.contains(event.target);
 
-    if(!isAboatCell(event.target)) {
-        document.getElementById('cell-state').classList.remove('active')
-        document.getElementById("move-boat").style.display='none'
-        document.getElementById("shoot-boat").style.display='none'
+    console.log("is inside buy-boat?", isInsideBuyBoat);
+    console.log("is inside cell-state?", isInsideCellState);
+    console.log("is inside move-boat?", isInsideMoveBoat);
+    console.log("is inside shoot-boat?", isInsideShootBoat);
+
+    // Hide cell state and related UI if the click is outside a boat cell and not inside cell-state
+    if (!isAboatCell(event.target) && !isInsideCellState && !isInsideMoveBoat && !isInsideShootBoat) {
+        cellStateElement.classList.remove('active');
+        document.getElementById("move-boat").style.display = 'none';
+        document.getElementById("shoot-boat").style.display = 'none';
     }
 
-    // hide the buy boat if not clicked on a base
-    if(!inBuyBoat(event.target) && !isAbaseCell(event.target))
-        document.getElementById('buy-boat').style.display = 'none'
+    // Hide the buy-boat menu if the click is outside buy-boat and base cells
+    if (!isInsideBuyBoat && !isAbaseCell(event.target)) {
+        buyBoatElement.style.display = 'none';
+    }
 });
 
-function isAbaseCell(target){
-    if(target.childNodes.length === 0)
-        return false
-    else{
-        if(target.childNodes[0].alt !== 'Base')
-            return false
-        else
-            return true
+// Check if the target is a base cell
+function isAbaseCell(target) {
+    if (target.childNodes.length === 0) {
+        return false;
+    } else {
+        return target.childNodes[0].alt === 'Base';
     }
 }
 
-function isAboatCell(target){
-    if(target.childNodes.length === 0)
-        return false
-    else{
-        if(target.childNodes[0].alt !== 'Boat')
-            return false
-        else
-            return true
+// Check if the target is a boat cell
+function isAboatCell(target) {
+    if (target.childNodes.length === 0) {
+        return false;
+    } else {
+        return target.childNodes[0].alt === 'Boat';
     }
 }
 
-function isEmptyCell(target){
-    if(target.classList.contains('cell') && target.childNodes.length === 0)
-        return true
-    return false
+// Check if the target is an empty cell
+function isEmptyCell(target) {
+    return target.classList.contains('cell') && target.childNodes.length === 0;
 }
 
-function inBuyBoat(target){
-    if(target.id === 'buy-boat' || target.parentElement.id === 'buy-boat')
-        return true
-    return false
+// Check if the target is inside the buy-boat menu
+function inBuyBoat(target) {
+    const buyBoatElement = document.getElementById('buy-boat');
+    return buyBoatElement.contains(target);
 }
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const homeScreen = document.getElementById('home-screen');

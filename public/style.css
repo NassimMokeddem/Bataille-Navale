@@ -71,16 +71,18 @@ html, body {
 #cell-state, #buy-boat {
     display: none;
     position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+    top: 0;
+    right: 0;
+    width: 20%;
+    margin-top: 10%;
+    margin-right: 22%;
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
     font-family: Arial, sans-serif;
     font-size: 14px;
     padding: 20px;
     box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.7);
-    max-height: 30%;
+    max-height: 40%;
     overflow-y: auto;
     z-index: 1000;
 }
@@ -147,6 +149,7 @@ html, body {
     position: absolute;
     right: 10px;
     font-size: 20px;
+    width: 15%;
     cursor: pointer;
     color: white;
     background-color: rgba(0, 0, 0, 0.8);
@@ -159,7 +162,7 @@ html, body {
 }
 
 #move-boat {
-    top: 10%;
+    top: 20%;
 }
 
 #shoot-boat {
@@ -245,6 +248,7 @@ html, body {
 #end-turn {
     display: none;
 }
+
 
 /* Ensure no extra spacing in the home screen */
 #home-screen {
