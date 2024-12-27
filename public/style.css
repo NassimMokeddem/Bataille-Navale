@@ -51,18 +51,18 @@ html, body {
 
 #argent-container {
     position: absolute; /* Position it relative to the document */
-    top: 2%; /* Distance from the top of the viewport */
-    right: 10px; /* Distance from the right of the viewport */
-    padding: 10px;
+    top: 3%; /* Distance from the top of the viewport */
+    right: 4%; /* Distance from the right of the viewport */
+    padding: 14px;
     border: 1px solid #ccc;
-    background-color: #0020ff;
+    background-color: #1a256c;
     z-index: 1000; /* Ensure it stays above other elements */
     border-radius: 5px; /* Optional: Add rounded corners */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for better visibility */
 }
 
 .argent-display {
-    font-size: 14px;
+    font-size: 20px;
     color: gold; /* Use a color that represents money */
     margin-bottom: 5px;
     text-align: right; /* Align text to the right */
@@ -73,9 +73,9 @@ html, body {
     position: fixed;
     top: 0;
     right: 0;
-    width: 20%;
+    width: 18%;
     margin-top: 10%;
-    margin-right: 22%;
+    margin-right: 27%;
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
     font-family: Arial, sans-serif;
@@ -147,7 +147,7 @@ html, body {
 #move-boat, #shoot-boat {
     display: none;
     position: absolute;
-    right: 10px;
+    right: 4%;
     font-size: 20px;
     width: 15%;
     cursor: pointer;
@@ -166,7 +166,7 @@ html, body {
 }
 
 #shoot-boat {
-    top: 40%;
+    top: 45%;
 }
 
 .button-54 {
@@ -226,8 +226,8 @@ html, body {
   touch-action: manipulation;
   width: 10%;
   position: absolute; /* Position it relative to the document */
-  top: 1%; /* Distance from the top of the viewport */
-  right: 10%; /* Distance from the right of the viewport */
+  bottom: 8%; /* Distance from the top of the viewport */
+  right: 8%; /* Distance from the right of the viewport */
   will-change: transform;
 }
 
@@ -273,6 +273,7 @@ html, body {
 /* Background for the game container */
 #game-container {
     display: none; /* Initially hidden */
+    background-image: url('/icons/wall.jpg'); /* Path to your background image */
     background-size: cover; /* Ensure the image covers the entire screen */
     background-position: center; /* Center the image */
     height: 100vh; /* Full viewport height */
@@ -390,3 +391,40 @@ margin-top: 350px; /* Add 150px top margin to the div containing buttons */
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow */
 }
 
+#game-container input {
+    width: 80px;
+    padding: 2px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+
+#shoot-boat {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between rows */
+    margin-top: 20px;
+}
+
+.form-group {
+    display: flex;
+    align-items: center; /* Vertically align labels and inputs */
+    justify-content: space-between;
+    gap: 10px; /* Space between label and input */
+}
+
+.form-group label {
+    flex-basis: 60%; /* Allocate 40% of the row's width for labels */
+    text-align: left; /* Align text to the right */
+}
+
+.form-group input {
+    width: 80px;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}

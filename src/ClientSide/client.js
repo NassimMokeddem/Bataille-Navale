@@ -47,9 +47,23 @@ const socket = io();
 
         
     })
-    function buyBoat(){
-        socket.emit('placeNavire', {type: document.getElementById("boat-type").value, x: Number(document.getElementById("x").value), y: Number(document.getElementById("y").value)});
+    function buyBoat() {
+        const selectedBoatType = document.querySelector('input[name="boat-type"]:checked')?.value;
+        if (!selectedBoatType) {
+            alert("Please select a boat type.");
+            return;
+        }
+        const x = Number(document.getElementById("x").value);
+        const y = Number(document.getElementById("y").value);
+    
+        if (isNaN(x) || isNaN(y)) {
+            alert("Please provide valid X and Y coordinates.");
+            return;
+        }
+    
+        socket.emit('placeNavire', { type: selectedBoatType, x, y });
     }
+    
 
     /*
     * On attend bien des chaînes de caractère pour l'identifiant de la partie
@@ -321,3 +335,32 @@ document.addEventListener('DOMContentLoaded', () => {
         menuContent.style.display = 'block'; // Show the Room ID menu
     });
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateBoatDetails();
+});
+
+function updateBoatDetails() {
+    const selectedBoatType = document.querySelector('input[name="boat-type"]:checked')?.value;
+    const boatPriceElement = document.getElementById("boat-price");
+    const boatImageElement = document.getElementById("boat-image");
+
+    if (!selectedBoatType) {
+        boatPriceElement.textContent = "";
+        boatImageElement.style.display = "none";
+        return;
+    }
+
+    // Set price and image based on the selected boat type
+    let boatDetails = {
+        Destroyer: { price: 20, image: "icons/destroyer.png" },
+        SousMarin: { price: 60, image: "icons/sous-marin.png" },
+        Fregate: { price: 35, image: "icons/fregate.png" },
+    };
+
+    const { price, image } = boatDetails[selectedBoatType];
+    boatPriceElement.textContent = `Price: 💰 ${price}`;
+    boatImageElement.src = image;
+    boatImageElement.style.display = "block";
+}
