@@ -40,7 +40,7 @@ const socket = io();
     })
 
     socket.on('ERROR', (msg) =>{
-        alert(msg);
+        // alert(msg);
     })
     socket.on('Fin De partie', (msg) =>{
         alert(msg);
