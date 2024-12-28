@@ -256,11 +256,8 @@ export default class Service{
         }
 
         //Modification ressource
-        this.getBaseNavale(idJoueur).setArgent(argent - prix);
-        
-        const navire = this.#createNavire(type);
 
-        this.getBaseNavale(idJoueur).getNaviresJ().push(navire);
+        const navire = this.#createNavire(type);
 
         try{
             if (!this.inTerritory(idJoueur, x ,y))
@@ -268,6 +265,9 @@ export default class Service{
             if(!this.getPlateau().enoughSpace(x, y, navire.getDimension()))
                 throw new Error("You can't place a boat here. Not enough space")
 
+            this.getBaseNavale(idJoueur).setArgent(argent - prix);
+    
+            this.getBaseNavale(idJoueur).getNaviresJ().push(navire);
             this.updatePlateau(x, y, navire)
         }
         catch(err ){
@@ -403,13 +403,19 @@ export default class Service{
         if(! this.verifPortee(this.getPlateau().getCase(xAttaquant, yAttaquant), this.getPlateau().getCase(xDefenseur, yDefenseur), attaquant.getPortee()))
             throw Error("The attacker doesn\'t have enough range")
 
-        try{
+        //try{
+        if(attaquant.pa > 0){
             this.appliqueDegat(attaquant, defenseur);
+            attaquant.pa -= 1;
         }
-        catch(err ){
-            if(err instanceof TypeError)
-                throw TypeError("Wrong argument type in Service: tirerNavire\nWent through the first control of Service: tirerNavire")
+        else {
+            throw Error("Pas assez de point d'action")
         }
+        // }
+        // catch(err ){
+        //     if(err instanceof TypeError)
+        //         throw TypeError("Wrong argument type in Service: tirerNavire\nWent through the first control of Service: tirerNavire")
+        // }
 
         if(defenseur.getSante() <= 0){
             this.pivotDetruireNavire(defenseur, xDefenseur, yDefenseur)
@@ -567,5 +573,17 @@ export default class Service{
             if(idJoueur == 2)
                 this.getBaseNavale(2).naviresJ.splice(this.getBaseNavale(2).naviresJ.findIndex(defenseur => defenseur), 1)
         }
+    }
+
+    updatePm(idJoueur){
+        this.getBaseNavale(idJoueur).naviresJ.forEach(element => {
+            element.resetPm()
+        })
+    }
+
+    updatePa(idJoueur){
+        this.getBaseNavale(idJoueur).naviresJ.forEach(element => {
+            element.resetPa()
+        })
     }
 }

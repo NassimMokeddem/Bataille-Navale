@@ -160,7 +160,27 @@ export class Navire {
         return this.sante <= 0;
     }
 
+    resetPm() {
+        const defaultPm = {
+            Destroyer: 5,
+            SousMarin: 4,
+            Fregate: 3,
+            Transporteur: 2,
+        }
     
+        this.pm = defaultPm[this.type] || 0
+    }
+
+    resetPa() {
+        const defaultPa = {
+            Destroyer: 2,
+            SousMarin: 4,
+            Fregate: 6,
+            Transporteur: 1,
+        }
+    
+        this.pa = defaultPa[this.type] || 0
+    }
 }
 
 /**
