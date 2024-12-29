@@ -23,71 +23,11 @@ const socket = io();
     })
 
     socket.on('navireEndommage', (game) => {
-        updatePlateau(game)
-    })
-
-    socket.on('navireArrive', (game) => {
-        updatePlateau(game)
-    })
-
-    socket.on('Tour', (msg) => {
-        const preElement = document.getElementById('turn-state');
-        preElement.innerHTML = JSON.stringify(msg, null, 2);
-    })
-
-    socket.on('TourD', (game) => {
-        updatePlateau(game)
-    })
-
-    socket.on('ERROR', (msg) =>{
-        alert(msg);
-    })
-    socket.on('Fin De partie', (msg) =>{
-        alert(msg);
-
-        
-    })
-    function buyBoat() {
-        const selectedBoatType = document.querySelector('input[name="boat-type"]:checked')?.value;
-        if (!selectedBoatType) {
-            alert("Please select a boat type.");
-            return;
-        }
-        const x = Number(document.getElementById("x").value);
-        const y = Number(document.getElementById("y").value);
-    
-        if (isNaN(x) || isNaN(y)) {
-            alert("Please provide valid X and Y coordinates.");
-            return;
-        }
-    
-        socket.emit('placeNavire', { type: selectedBoatType, x, y });
-    }
-    
-
-    /*
-    * On attend bien des chaînes de caractère pour l'identifiant de la partie
-    */
-    function createGame(){
-        socket.emit('newGame', String(document.getElementById("roomID").value));
-        console.log('toto')
-        joueur = 1
-    }
-
-    function joinGame(){
-        socket.emit('joinGame', String(document.getElementById("roomID").value));
-        joueur = 2
-    }
-
-    function shootBoat() {
         const xAtk = Number(document.getElementById("xAtk").value);
         const yAtk = Number(document.getElementById("yAtk").value);
         const xDef = Number(document.getElementById("xDef").value);
         const yDef = Number(document.getElementById("yDef").value);
-    
-        // Emit the event to the server
-        socket.emit('navireAttaque', { xAttaquant: xAtk, yAttaquant: yAtk, xDefenseur: xDef, yDefenseur: yDef });
-    
+
         // Get the dimensions of the game board and cells
         const cellSize = gameBoard.querySelector('.cell').offsetWidth;
     
@@ -129,6 +69,71 @@ const socket = io();
                 explosion.remove();
             });
         });
+
+        updatePlateau(game)
+    })
+
+    socket.on('navireArrive', (game) => {
+        updatePlateau(game)
+    })
+
+    socket.on('Tour', (msg) => {
+        const preElement = document.getElementById('turn-state');
+        preElement.innerHTML = JSON.stringify(msg, null, 2);
+    })
+
+    socket.on('TourD', (game) => {
+        updatePlateau(game)
+    })
+
+    socket.on('ERROR', (msg) =>{
+        //alert(msg);
+    })
+    socket.on('Fin De partie', (msg) =>{
+        alert(msg);
+
+        
+    })
+    function buyBoat() {
+        const selectedBoatType = document.querySelector('input[name="boat-type"]:checked')?.value;
+        if (!selectedBoatType) {
+            alert("Please select a boat type.");
+            return;
+        }
+        const x = Number(document.getElementById("x").value);
+        const y = Number(document.getElementById("y").value);
+    
+        if (isNaN(x) || isNaN(y)) {
+            alert("Please provide valid X and Y coordinates.");
+            return;
+        }
+    
+        socket.emit('placeNavire', { type: selectedBoatType, x, y });
+    }
+    
+
+    /*
+    * On attend bien des chaînes de caractère pour l'identifiant de la partie
+    */
+    function createGame(){
+        socket.emit('newGame', String(document.getElementById("roomID").value));
+        console.log('toto')
+        joueur = 1
+    }
+
+    function joinGame(){
+        socket.emit('joinGame', String(document.getElementById("roomID").value));
+        joueur = 2
+    }
+
+    function shootBoat() {
+        // Emit the event to the server
+        socket.emit('navireAttaque', { 
+             xAttaquant: Number(document.getElementById("xAtk").value),
+             yAttaquant: Number(document.getElementById("yAtk").value),
+             xDefenseur: Number(document.getElementById("xDef").value),
+             yDefenseur: Number(document.getElementById("yDef").value)
+            });
         
     }
     
