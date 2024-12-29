@@ -84,19 +84,24 @@ const socket = io();
         const yAtk = Number(document.getElementById("yAtk").value);
         const xDef = Number(document.getElementById("xDef").value);
         const yDef = Number(document.getElementById("yDef").value);
-
+    
         // Emit the event to the server
         socket.emit('navireAttaque', { xAttaquant: xAtk, yAttaquant: yAtk, xDefenseur: xDef, yDefenseur: yDef });
-
+    
         // Get the dimensions of the game board and cells
         const cellSize = gameBoard.querySelector('.cell').offsetWidth;
-
-        // Calculate positions
-        const startX = xAtk * cellSize + cellSize / 2; // Center of attacker cell
-        const startY = yAtk * cellSize + cellSize / 2;
-        const endX = xDef * cellSize + cellSize / 2; // Center of defender cell
-        const endY = yDef * cellSize + cellSize / 2;
-
+    
+        // Get the game board's position relative to the viewport
+        const boardRect = gameBoard.getBoundingClientRect();
+    
+        // Calculate the starting position of the missile
+        const startX = boardRect.left + xAtk * cellSize; // Center of attacker cell
+        const startY = boardRect.top + yAtk * cellSize;
+    
+        // Calculate the ending position of the missile
+        const endX = boardRect.left + xDef * cellSize; // Center of defender cell
+        const endY = boardRect.top + yDef * cellSize;
+    
         // Create the missile element
         const missile = document.createElement("div");
         missile.className = "missile";
@@ -104,15 +109,29 @@ const socket = io();
         missile.style.top = `${startY}px`;
         missile.style.setProperty('--target-x', `${endX - startX}px`);
         missile.style.setProperty('--target-y', `${endY - startY}px`);
-
-        // Append the missile to the game board
-        gameBoard.appendChild(missile);
-
-        // Remove the missile after animation ends
+    
+        // Append the missile to the document body
+        document.body.appendChild(missile);
+    
         missile.addEventListener("animationend", () => {
             missile.remove();
+        
+            // Create explosion at defender's position
+            const explosion = document.createElement("div");
+            explosion.className = "explosion";
+            explosion.style.left = `${endX - 15}px`; // Adjust to center the explosion
+            explosion.style.top = `${endY - 15}px`;
+        
+            gameBoard.appendChild(explosion);
+        
+            // Remove the explosion after the animation
+            explosion.addEventListener("animationend", () => {
+                explosion.remove();
+            });
         });
+        
     }
+    
 
 
     function moveBoat(){

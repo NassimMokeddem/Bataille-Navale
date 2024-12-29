@@ -129,6 +129,28 @@ html, body {
     animation: shoot 1s linear forwards;
 }
 
+@keyframes explode {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(3);
+    }
+}
+
+.explosion {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: orange;
+    border-radius: 50%;
+    animation: explode 0.5s ease-out forwards;
+    z-index: 10;
+}
+
+
 
 /* Close button style */
 #buy-boat .close-btn {
