@@ -40,7 +40,7 @@ const socket = io();
     })
 
     socket.on('ERROR', (msg) =>{
-        // alert(msg);
+        alert(msg);
     })
     socket.on('Fin De partie', (msg) =>{
         alert(msg);
@@ -123,6 +123,8 @@ const socket = io();
         socket.emit('finDeTour');
     }
 
+
+    // ATTENTION row sont les y et col sont les x
     function updatePlateau(game){
         // Initialize the game board based on the fetched state
         gameBoard.innerHTML = '';
@@ -197,7 +199,7 @@ const socket = io();
                 const boatInfo = cell.contenu; // The Navire object
                 
                 stateElement.innerHTML = `
-                <h3>Boat Information at (${row}, ${col})</h3>
+                <h3>Boat Information at (${col}, ${row})</h3>
                 <p><strong>Type:</strong> ${boatInfo.type}</p>
                 <p><strong>Health:</strong> ${boatInfo.sante} / ${boatInfo.santeMax}</p>
                 <p><strong>Damage:</strong> ${boatInfo.degat}</p>
@@ -213,10 +215,10 @@ const socket = io();
                 stateElement.classList.add('active');
                 document.getElementById("move-boat").style.display='block'
                 document.getElementById("shoot-boat").style.display='block'
-                document.getElementById("xDep").value = row
-                document.getElementById("yDep").value = col
-                document.getElementById("xAtk").value = row
-                document.getElementById("yAtk").value = col
+                document.getElementById("xDep").value = col
+                document.getElementById("yDep").value = row
+                document.getElementById("xAtk").value = col
+                document.getElementById("yAtk").value = row
         }
         else if ('argent' in cell.contenu){
             //if ((row >= 0 && row <= 1) && (col >= 0 && col <= 1) && joueur === 1) {  // Replace with the condition for your base locations
