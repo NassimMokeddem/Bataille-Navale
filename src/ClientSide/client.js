@@ -87,7 +87,13 @@ const socket = io();
     })
 
     socket.on('ERROR', (msg) =>{
-        //alert(msg);
+        if(msg === 'partie pleine' && joueur === 2){
+        }
+        else if(!erreurPartiePleineAffichee){
+            alert(msg)
+        }
+        if(joueur !== 2 && joueur !== 1)
+            erreurPartiePleineAffichee = true
     })
     socket.on('Fin De partie', (msg) =>{
         alert(msg);
@@ -116,14 +122,41 @@ const socket = io();
     * On attend bien des chaînes de caractère pour l'identifiant de la partie
     */
     function createGame(){
-        socket.emit('newGame', String(document.getElementById("roomID").value));
-        console.log('toto')
+        const roomID = document.getElementById('roomID').value;
+        if (!roomID || isNaN(roomID) || parseInt(roomID) <= 0) {
+            alert("Entrez un nombre svp");
+            return 0
+        }
+        socket.emit('newGame', String(roomID));
+        //console.log('toto')
         joueur = 1
+        return 1
     }
+    let erreurPartiePleineAffichee = false;
 
-    function joinGame(){
-        socket.emit('joinGame', String(document.getElementById("roomID").value));
-        joueur = 2
+    function joinGame() {
+        erreurPartiePleineAffichee = false
+        return new Promise((resolve, reject) => {
+            const roomID = document.getElementById('roomID').value
+    
+            if (!roomID || isNaN(roomID) || parseInt(roomID) <= 0) {
+                alert("Please enter a valid Room ID (positive integer) before joining.")
+                reject(0)
+                return
+            }
+    
+            socket.emit('joinGame', String(roomID))
+    
+            socket.on('OK', (msg) => {
+                if (msg === 'go') {
+                    joueur = 2
+                    resolve(1)
+                } else {
+                    console.log(msg)
+                    reject(0)
+                }
+            })
+        })
     }
 
     function shootBoat() {
@@ -336,14 +369,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Attach event handlers to the buttons
-    document.querySelector('[onclick="createGame()"]').addEventListener('click', () => {
-        createGame(); // Call your existing createGame function
-        showGameScreen(); // Transition to game screen
+     document.getElementById('createGameButton').addEventListener('click', () => {
+        if(createGame()) // Call your existing createGame function
+            showGameScreen() // Transition to game screen
     });
 
-    document.querySelector('[onclick="joinGame()"]').addEventListener('click', () => {
-        joinGame(); // Call your existing joinGame function
-        showGameScreen(); // Transition to game screen
+    document.getElementById('joinGameButton').addEventListener('click', () => {
+        joinGame().then((result) => {
+            showGameScreen()
+        })
+        .catch((error) => {
+            console.log('Failed to join game:', error)
+        });
     });
 
     // Initialize by showing the home screen

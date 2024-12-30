@@ -18,6 +18,7 @@ export class Socket{
 			return;
 		}
 		console.log('Player joining room ', partieID);
+		player.socket.emit('OK', 'go');
 
 		Socket.Partie[partieID].initPlayer(player, 1);
 	}
