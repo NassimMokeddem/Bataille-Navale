@@ -256,11 +256,8 @@ export default class Service{
         }
 
         //Modification ressource
-        this.getBaseNavale(idJoueur).setArgent(argent - prix);
-        
-        const navire = this.#createNavire(type);
 
-        this.getBaseNavale(idJoueur).getNaviresJ().push(navire);
+        const navire = this.#createNavire(type);
 
         try{
             if (!this.inTerritory(idJoueur, x ,y))
@@ -268,6 +265,9 @@ export default class Service{
             if(!this.getPlateau().enoughSpace(x, y, navire.getDimension()))
                 throw new Error("You can't place a boat here. Not enough space")
 
+            this.getBaseNavale(idJoueur).setArgent(argent - prix);
+    
+            this.getBaseNavale(idJoueur).getNaviresJ().push(navire);
             this.updatePlateau(x, y, navire)
         }
         catch(err ){
@@ -364,45 +364,23 @@ export default class Service{
             defenseur.setSante(defenseur.getSante() - degatAppliquee)
         else defenseur.setSante(0)
     }
-/*
-    tirer(cAttaquant, cDefenseur){
 
-        if(attaquant instanceof BaseNavale)
-            throw TypeError("Wrong argument type attaquant (Base) in Plateau: tirerNavire")
-
-        if(defenseur instanceof BaseNavale)
-            throw TypeError("Wrong argument type defenseur (Base) in Plateau: tirerNavire")
-
-        if(! (attaquant instanceof Navire))
-            throw TypeError("Wrong argument type attaquant in Plateau: tirerNavire")
-
-        if(! (defenseur instanceof Navire))
-            throw TypeError("Wrong argument type defenseur in Plateau: tirerNavire")
-
-        if(! (cAttaquant instanceof Case) )
-            throw TypeError("Wrong argument type cAttaquant in Plateau: tirerNavire")
-
-        if(! (cDefenseur instanceof Case) )
-            throw TypeError("Wrong argument type cDefenseur in Plateau: tirerNavire")
-
-        if(! this.verifPortee(cAttaquant, cDefenseur, attaquant.getPortee()))
-            throw Error("The attacker doesn\'t have enough range")
-
-        try{
-            this.appliqueDegat(attaquant, defenseur);
+    pivotDetruireNavire(navire, xNavire, yNavire){
+        for(let i = 0; i < navire.getDimension()[1] - 1; i++){
+            if((yNavire - 1) < 0 ||
+               this.getPlateau().getCase(xNavire, yNavire - 1).getContenu() === null ||
+               this.getPlateau().getCase(xNavire, yNavire- 1).getContenu() !== navire){
+               break;
+            }
+            else{
+                yNavire-= 1
+            }
         }
-        catch(err ){
-            if(err instanceof TypeError)
-                throw TypeError("Wrong argument type in Service: tirerNavire\nWent through the first control of Service: tirerNavire")
+        for(let i = 0; i < navire.getDimension()[1]; i++){
+            this.getPlateau().getCase(xNavire, yNavire + i).vider()
         }
-
-        if(defenseur.estDetruit())
-            cDefenseur.vider();
-
-        return defenseur
     }
 
-  */
     tirer(xAttaquant, yAttaquant, xDefenseur, yDefenseur, idJoueur){
         let attaquant = this.getPlateau().getCase(xAttaquant, yAttaquant).getContenu()
         let defenseur = this.getPlateau().getCase(xDefenseur, yDefenseur).getContenu()
@@ -425,30 +403,22 @@ export default class Service{
         if(! this.verifPortee(this.getPlateau().getCase(xAttaquant, yAttaquant), this.getPlateau().getCase(xDefenseur, yDefenseur), attaquant.getPortee()))
             throw Error("The attacker doesn\'t have enough range")
 
-        try{
+        //try{
+        if(attaquant.pa > 0){
             this.appliqueDegat(attaquant, defenseur);
+            attaquant.pa -= 1;
         }
-        catch(err ){
-            if(err instanceof TypeError)
-                throw TypeError("Wrong argument type in Service: tirerNavire\nWent through the first control of Service: tirerNavire")
+        else {
+            throw Error("Pas assez de point d'action")
         }
+        // }
+        // catch(err ){
+        //     if(err instanceof TypeError)
+        //         throw TypeError("Wrong argument type in Service: tirerNavire\nWent through the first control of Service: tirerNavire")
+        // }
 
         if(defenseur.getSante() <= 0){
-            
-            for(let i = 0; i < defenseur.getDimension()[1] - 1; i++){
-                if((yDefenseur - 1) < 0 ||
-                   this.getPlateau().getCase(xDefenseur, yDefenseur - 1).getContenu() === null ||
-                   this.getPlateau().getCase(xDefenseur, yDefenseur- 1).getContenu() !== defenseur){
-                   break;
-                }
-                else{
-                    yDefenseur-= 1
-                }
-            }
-            for(let i = 0; i < defenseur.getDimension()[1]; i++){
-                this.getPlateau().getCase(xDefenseur, yDefenseur + i).vider()
-                console.log(this.getPlateau().getCase(xDefenseur, yDefenseur + i).contenu)
-            }
+            this.pivotDetruireNavire(defenseur, xDefenseur, yDefenseur)
 
             if(idJoueur == 1)
                 this.getBaseNavale(2).naviresJ.splice(this.getBaseNavale(2).naviresJ.findIndex(defenseur => defenseur), 1);
@@ -458,26 +428,6 @@ export default class Service{
         }
 
         return defenseur
-    }
-
-    /*
-    * Deprecated
-    */
-    applyShot(x1, y1, x2, y2, res, plateau){ // x1 et y1 bateau source du tir
-        if(x1 === x2 && y1 === y2){ // ajouter case ou il y'avait un bateau mais détruit
-            res.json({ message: `On ne peux pas se tirer dessus !!! x:${x2} y:${y2}`, plateau});
-        }
-        else if(plateau.grille[x2][y2].contenu === null){
-            res.json({ message: `Aucun bateau sur la case x:${x2} y:${y2}`, plateau});
-        }
-        else if(plateau.grille[x2][y2].contenu.sante < plateau.grille[x1][y1].contenu.degat){
-            plateau.grille[x2][y2].vider();
-            res.json({ message: `Bateau detruit sur la case x:${x2} y:${y2}`, plateau});
-        }
-        else{
-            plateau.grille[x2][y2].contenu.sante = plateau.grille[x2][y2].contenu.sante - plateau.grille[x1][y1].contenu.degat;
-            res.json({ message: `x:${x1} y:${y1} tire sur la case x:${x2} y:${y2}`, plateau });
-        }
     }
 
     repare(xRepare, yRepare, idJoueur){
@@ -500,12 +450,32 @@ export default class Service{
         
     }
 
-
     updateFood(idJoueur){
         this.getBaseNavale(idJoueur).naviresJ.forEach(element => {
-            element.nourriture -= 5;
-        });
-        
+            if(element.inutilisable === false){
+                if(element.equipage === 1 && element.nourriture === 0){
+                    element.inutilisable = true
+                    element.equipage = 0
+                }
+                else if(element.nourriture - element.equipage >= 0)
+                    element.nourriture -= element.equipage
+                else{
+                    while(element.nourriture - element.equipage < 0){
+                        if(element.equipage - 1 >= 1){
+                            element.equipage -= 1
+                            element.nourriture += 20
+                        }
+                        // else{
+                        //     element.inutilisable = true
+                        //     break
+                        // }
+                    }
+                    if(element.inutilisable === false){
+                        element.nourriture -= element.equipage
+                    }
+                }
+            }
+        })
     }
 
     moveNavire(xNavire, yNavire, xDeplacement, yDeplacement, idJoueur){
@@ -570,5 +540,50 @@ export default class Service{
     
         // Retourne true si la partie est terminée pour le joueur, sinon false
         return tousInutilisables;
+    }
+
+    abordage(xAttaquant, yAttaquant, xDefenseur, yDefenseur, idJoueur) {
+        let attaquant = this.getPlateau().getCase(xAttaquant, yAttaquant).getContenu()
+        let defenseur = this.getPlateau().getCase(xDefenseur, yDefenseur).getContenu()
+    
+        if (!(attaquant instanceof Navire) || !(defenseur instanceof Navire)) {
+            throw new TypeError("abordage (Service.js) -> Les coordonnées fournies ne correspondent pas à des navires")
+        }
+        if (attaquant === defenseur) {
+            throw new TypeError("abordage (Service.js) -> Vous ne pouvez pas aborder un navire avec le même navire !!!")
+        }
+        if (!this.getBaseNavale(idJoueur).naviresJ.includes(attaquant)) {
+            throw new TypeError("abordage (Service.js) -> Le navire attaquant ne vous appartient pas")
+        }
+    
+        if (Math.abs(xAttaquant - xDefenseur) + Math.abs(yAttaquant - yDefenseur) > 2) {
+            throw new Error("abordage (Service.js) -> Le navire défenseur est hors de portée")
+        }
+    
+        if (attaquant.getEquipage() > defenseur.getEquipage()) {
+            this.pivotDetruireNavire(defenseur, xDefenseur, yDefenseur)
+            if(idJoueur == 1)
+                this.getBaseNavale(2).naviresJ.splice(this.getBaseNavale(2).naviresJ.findIndex(defenseur => defenseur), 1)
+            if(idJoueur == 2)
+                this.getBaseNavale(1).naviresJ.splice(this.getBaseNavale(1).naviresJ.findIndex(defenseur => defenseur), 1)
+        } else {
+            this.pivotDetruireNavire(attaquant, xAttaquant, yAttaquant)
+            if(idJoueur == 1)
+                this.getBaseNavale(1).naviresJ.splice(this.getBaseNavale(1).naviresJ.findIndex(defenseur => defenseur), 1)
+            if(idJoueur == 2)
+                this.getBaseNavale(2).naviresJ.splice(this.getBaseNavale(2).naviresJ.findIndex(defenseur => defenseur), 1)
+        }
+    }
+
+    updatePm(idJoueur){
+        this.getBaseNavale(idJoueur).naviresJ.forEach(element => {
+            element.resetPm()
+        })
+    }
+
+    updatePa(idJoueur){
+        this.getBaseNavale(idJoueur).naviresJ.forEach(element => {
+            element.resetPa()
+        })
     }
 }

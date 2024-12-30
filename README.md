@@ -6,7 +6,7 @@ Ce projet est un jeu de stratégie navale combinant des éléments de la bataill
 
 ## Fonctionnalités principales
 
-- **Contrôleur réseau** : Un `Controller` établit une connexion par socket en accédant à l'URL `http://adresse_serveur/partie/start/`.
+- **Contrôleur réseau** : Un `Controller` établit une connexion par socket en accédant à l'URL `http://adresse_serveur/start/`.
 - **Modèles du jeu** :
   - `Navire.js` : représente les différents navires.
   - `BaseNavale.js` : gère les bases navales des joueurs.
@@ -45,7 +45,7 @@ npm start
 Une fois le serveur lancé, les joueurs peuvent rejoindre la partie en accédant à l'URL suivante dans leur navigateur :
 
 ```plaintext
-http://adresse_serveur/partie/start/
+http://adresse_serveur/start/
 ```
 
 La requête API pour démarrer une partie est l'url spécifié au dessus.

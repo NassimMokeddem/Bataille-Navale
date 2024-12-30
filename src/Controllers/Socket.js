@@ -119,7 +119,7 @@ export class Socket{
 			}
 
 			try{
-				let def = this.service.tirer(data.xAttaquant, data.yAttaquant, data.xDefenseur, data.yDefenseur, tour?2:1);
+				this.service.tirer(data.xAttaquant, data.yAttaquant, data.xDefenseur, data.yDefenseur, tour?2:1);
 				player.socket.emit('navireEndommage', this.service.getPlateau());
 				tour?this.joueur1.socket.emit('navireEndommage', this.service.getPlateau()):this.joueur2.socket.emit('navireEndommage', this.service.getPlateau())
 
@@ -147,6 +147,11 @@ export class Socket{
 				}
 
 				if(err.message == 'The attacker doesn\'t have enough range'){
+					player.socket.emit('ERROR', err.message);
+					return
+				}
+
+				if(err.message == "Pas assez de point d'action"){
 					player.socket.emit('ERROR', err.message);
 					return
 				}
@@ -222,6 +227,8 @@ export class Socket{
 				this.joueur1.socket.emit('Fin De partie','tu as gagne');
 				
 			}
+			this.service.updatePm(tour?2:1);
+			this.service.updatePa(tour?2:1);
 			this.service.updateFood(tour?2:1);
 
 			this.joueur1.socket.emit('Tour', 'Tour du Joueur ' + (this.tour?'2':'1'));
