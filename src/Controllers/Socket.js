@@ -26,11 +26,13 @@ export class Socket{
 	constructor(joueur1, partieID){
 
 		if(Socket.Partie[partieID] !== undefined){
-			joueur1.socket.emit('ERROR', new Error('PartieID déjà utilisé'));
+			joueur1.socket.emit('ERROR', 'PartieID déjà utilisé');
 			// pas certains de ça
 			delete this;
 			return;
 		}
+
+		joueur1.socket.emit('OKK', 'j1go');
 
 		this.service = new Service();
 
@@ -56,6 +58,8 @@ export class Socket{
 		// Début de partie
 		if(this.partieDebut && this.joueur1 !== undefined && this.joueur2 !== undefined){
 			this.service.startGame()
+			this.joueur1.socket.emit('Tour', 'Tour du Joueur ' + (this.tour?'2':'1'));
+			this.joueur2.socket.emit('Tour', 'Tour du Joueur ' + (this.tour?'2':'1'));
 			this.joueur1.socket.emit('game created', this.service.getPlateau());
 			this.joueur2.socket.emit('game created', this.service.getPlateau());
 			this.partieDebut = false;

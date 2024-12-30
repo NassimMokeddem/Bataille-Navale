@@ -121,18 +121,30 @@ const socket = io();
     /*
     * On attend bien des chaînes de caractère pour l'identifiant de la partie
     */
-    function createGame(){
-        const roomID = document.getElementById('roomID').value;
-        if (!roomID || isNaN(roomID) || parseInt(roomID) <= 0) {
-            alert("Entrez un nombre svp");
-            return 0
-        }
-        socket.emit('newGame', String(roomID));
-        //console.log('toto')
-        joueur = 1
-        return 1
-    }
     let erreurPartiePleineAffichee = false;
+
+    function createGame(){
+        erreurPartiePleineAffichee = false
+        return new Promise((resolve, reject) => {
+            const roomID = document.getElementById('roomID').value;
+            if (!roomID || isNaN(roomID) || parseInt(roomID) <= 0) {
+                alert("Entrez un nombre svp");
+                reject(0)
+                return
+            }
+            socket.emit('newGame', String(roomID));
+            socket.on('OKK', (msg) => {
+                if (msg === 'j1go') {
+                    joueur = 1
+                    resolve(1)
+                } else {
+                    console.log(msg)
+                    reject(0)
+                }
+            })
+            //console.log('toto')
+        })
+    }
 
     function joinGame() {
         erreurPartiePleineAffichee = false
@@ -140,7 +152,7 @@ const socket = io();
             const roomID = document.getElementById('roomID').value
     
             if (!roomID || isNaN(roomID) || parseInt(roomID) <= 0) {
-                alert("Please enter a valid Room ID (positive integer) before joining.")
+                alert("Entrez un nombre svp")
                 reject(0)
                 return
             }
@@ -203,11 +215,13 @@ const socket = io();
                         cellDiv.appendChild(baseIcon);
 
                         if(joueur === 1 && (rowIndex === 0 && colIndex === 0)){
-                            argentContainer.innerHTML = `<div class="argent-display">💰 ${cell.contenu.argent}</div>`
+                            argentContainer.innerHTML = `<div class="argent-display">JOUEUR 1</div>
+                            <div class="argent-display">💰 ${cell.contenu.argent}</div>`
                         }
 
                         if(joueur === 2 && (rowIndex ===  game.grille.length - 1 && colIndex === row.length - 1)){
-                            argentContainer.innerHTML = `<div class="argent-display">💰 ${cell.contenu.argent}</div>`
+                            argentContainer.innerHTML = `<div class="argent-display">JOUEUR 2</div>
+                            <div class="argent-display">💰 ${cell.contenu.argent}</div>`
                         }
                     }
                     else if('type' in cell.contenu){
@@ -370,8 +384,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Attach event handlers to the buttons
      document.getElementById('createGameButton').addEventListener('click', () => {
-        if(createGame()) // Call your existing createGame function
-            showGameScreen() // Transition to game screen
+        // if(createGame()) // Call your existing createGame function
+        //     showGameScreen() // Transition to game screen
+        createGame().then((result) => {
+            showGameScreen()
+        })
+        .catch((error) => {
+            console.log('Failed to create game:', error)
+        });
     });
 
     document.getElementById('joinGameButton').addEventListener('click', () => {
