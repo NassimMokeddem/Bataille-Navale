@@ -146,6 +146,11 @@ export class Socket{
 					return
 				}
 
+				if(err.message == 'resupplyNavire (Service.js) -> Le navire ne vous appartient pas'){
+					player.socket.emit('ERROR', 'You\'re can only shoot with your own boats');
+					return
+				}
+
 				if(err.message == 'Wrong argument type defenseur in Plateau: tirerNavire'){
 					player.socket.emit('ERROR', 'You\'re firing on something unidentified');
 					return

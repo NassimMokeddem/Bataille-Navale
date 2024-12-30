@@ -381,12 +381,23 @@ export default class Service{
         }
     }
 
+    ajoutArgent(navire){
+        const defaultPm = {
+            Destroyer: 10,
+            SousMarin: 30,
+            Fregate: 18,
+            Transporteur: 15,
+        }
+    
+        return defaultPm[navire] || 0
+    }
+
     tirer(xAttaquant, yAttaquant, xDefenseur, yDefenseur, idJoueur){
         let attaquant = this.getPlateau().getCase(xAttaquant, yAttaquant).getContenu()
         let defenseur = this.getPlateau().getCase(xDefenseur, yDefenseur).getContenu()
 
         if(! (this.getBaseNavale(idJoueur).naviresJ.includes(attaquant))){
-            throw new TypeError("resupplyNavire (Service.js) -> Le navire ne vous appartient pas")
+            throw Error("resupplyNavire (Service.js) -> Le navire ne vous appartient pas")
         }
         if(attaquant instanceof BaseNavale)
             throw TypeError("Wrong argument type attaquant (Base) in Plateau: tirerNavire")
@@ -424,7 +435,9 @@ export default class Service{
                 this.getBaseNavale(2).naviresJ.splice(this.getBaseNavale(2).naviresJ.findIndex(defenseur => defenseur), 1);
             if(idJoueur == 2)
                 this.getBaseNavale(1).naviresJ.splice(this.getBaseNavale(1).naviresJ.findIndex(defenseur => defenseur), 1);
-
+            
+            const argent = this.getBaseNavale(idJoueur).getArgent();
+            this.getBaseNavale(idJoueur).setArgent(argent + this.ajoutArgent(defenseur.type));
         }
 
         return defenseur
