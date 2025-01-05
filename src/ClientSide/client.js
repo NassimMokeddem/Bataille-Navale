@@ -459,11 +459,11 @@ document.addEventListener("DOMContentLoaded", () => {
             gameMusic.play();
             gameMusic.loop = true; // La musique se répète en boucle
 
-            // Arrêter la musique après 30 secondes
-            setTimeout(() => {
-                gameMusic.pause();
-                gameMusic.currentTime = 0; // Remet à zéro la lecture
-            }, 30000); // 30 000 ms = 30 secondes
+            // // Arrêter la musique après 30 secondes
+            // setTimeout(() => {
+            //     gameMusic.pause();
+            //     gameMusic.currentTime = 0; // Remet à zéro la lecture
+            // }, 30000); // 30 000 ms = 30 secondes
         });
     }
 });
